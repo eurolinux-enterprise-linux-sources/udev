@@ -1,0 +1,30 @@
+From cfc3af3e8f173d0a7985720700f4d2293f55372b Mon Sep 17 00:00:00 2001
+From: Kay Sievers <kay.sievers@vrfy.org>
+Date: Wed, 23 Mar 2011 12:11:38 +0100
+Subject: [PATCH 2/2] rules: run ata_id only on SPC-3 or later optical drives
+
+(cherry picked from commit a31d76b18675a0bf213fdd16242b4268c9ff48e0)
+
+Related: #1220617
+---
+ rules/rules.d/60-persistent-storage.rules | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/rules/rules.d/60-persistent-storage.rules b/rules/rules.d/60-persistent-storage.rules
+index 7f3447c..0a0d74d 100644
+--- a/rules/rules.d/60-persistent-storage.rules
++++ b/rules/rules.d/60-persistent-storage.rules
+@@ -50,8 +50,8 @@ KERNEL=="sd*[!0-9]|sr*", ENV{ID_SERIAL}!="?*", ATTR{removable}=="0", SUBSYSTEMS=
+ # USB devices use their own serial number
+ KERNEL=="sd*[!0-9]|sr*", ENV{ID_SERIAL}!="?*", SUBSYSTEMS=="usb", IMPORT{program}="usb_id --export %p"
+ 
+-# ATA/ATAPI devices using the "scsi" subsystem
+-KERNEL=="sd*[!0-9]|sr*", ENV{ID_SERIAL}!="?*", SUBSYSTEMS=="scsi", ATTRS{type}=="5", IMPORT{program}="ata_id --export $tempnode"
++# ATA/ATAPI devices (SPC-3 or later) using the "scsi" subsystem
++KERNEL=="sd*[!0-9]|sr*", ENV{ID_SERIAL}!="?*", SUBSYSTEMS=="scsi", ATTRS{type}=="5", ATTRS{scsi_level}=="[6-9]*", IMPORT{program}="ata_id --export $tempnode"
+ 
+ # scsi devices
+ KERNEL=="sd*[!0-9]|sr*", ENV{ID_SERIAL}!="?*", IMPORT{program}="scsi_id --export --whitelisted -d $tempnode", ENV{ID_BUS}="scsi"
+-- 
+2.5.0
+

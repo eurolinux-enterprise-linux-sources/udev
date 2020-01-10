@@ -1,0 +1,34 @@
+From 5c0564408dfce5f6116cd8a80ff39ed0bb699649 Mon Sep 17 00:00:00 2001
+From: Michal Sekletar <msekleta@redhat.com>
+Date: Wed, 27 Jan 2016 19:32:30 +0100
+Subject: [PATCH] Fix possible use of uninitialized variable
+
+Related: #891669
+---
+ extras/scsi_id/scsi_id.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/extras/scsi_id/scsi_id.c b/extras/scsi_id/scsi_id.c
+index b359189..b57a9b1 100644
+--- a/extras/scsi_id/scsi_id.c
++++ b/extras/scsi_id/scsi_id.c
+@@ -634,7 +634,7 @@ int main(int argc, char **argv)
+ 	int retval = 0;
+ 	char maj_min_dev[MAX_PATH_LEN];
+ 	int newargc;
+-	char **newargv;
++	char **newargv = NULL;
+ 
+ 	udev = udev_new();
+ 	if (udev == NULL)
+@@ -646,7 +646,6 @@ int main(int argc, char **argv)
+ 	/*
+ 	 * Get config file options.
+ 	 */
+-	newargv = NULL;
+ 	retval = get_file_options(udev, NULL, NULL, &newargc, &newargv);
+ 	if (retval < 0) {
+ 		retval = 1;
+-- 
+2.5.0
+

@@ -1,0 +1,29 @@
+From d157ba92322ad60a4725b37b6043bfa06492e059 Mon Sep 17 00:00:00 2001
+From: Michal Sekletar <msekleta@redhat.com>
+Date: Thu, 15 Oct 2015 15:29:27 +0200
+Subject: [PATCH] scsi_id: fix file descriptor leak
+
+(cherry-picked from commit ab261e1226efac3d47b2dc4a0e0165aeb8bb528e)
+
+Related: #891669
+---
+ extras/scsi_id/scsi_serial.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/extras/scsi_id/scsi_serial.c b/extras/scsi_id/scsi_serial.c
+index 04521b6..7c72208 100644
+--- a/extras/scsi_id/scsi_serial.c
++++ b/extras/scsi_id/scsi_serial.c
+@@ -953,7 +953,8 @@ int scsi_get_serial(struct udev *udev,
+ 		}
+ 	} else if (page_code != 0x00) {
+ 		info(udev, "%s: unsupported page code 0x%d\n", dev_scsi->kernel, page_code);
+-		return 1;
++		retval = 1;
++		goto completed;
+ 	}
+ 
+ 	/*
+-- 
+2.5.0
+

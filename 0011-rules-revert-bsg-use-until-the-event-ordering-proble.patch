@@ -1,0 +1,50 @@
+From ef05125c80060736a790ebe0eb203fa71bb93a39 Mon Sep 17 00:00:00 2001
+From: Kay Sievers <kay.sievers@vrfy.org>
+Date: Tue, 30 Nov 2010 11:48:08 +0100
+Subject: [PATCH 1/2] rules: revert bsg use until the event ordering problem is
+ sorted out
+
+The bsg devices node are created after the LUN, so we fail in the
+hotplug case, but succeed at coldplug, and create inconsistent data
+that way.
+
+The bsg device event order will need to be sorted out, by changing the
+kernel.
+
+(cherry picked from commit 310f99d33595afdc1962611a913c429785f9ad40)
+
+Related: #1220617
+---
+ rules/rules.d/60-persistent-storage.rules | 9 ---------
+ 1 file changed, 9 deletions(-)
+
+diff --git a/rules/rules.d/60-persistent-storage.rules b/rules/rules.d/60-persistent-storage.rules
+index d19e241..7f3447c 100644
+--- a/rules/rules.d/60-persistent-storage.rules
++++ b/rules/rules.d/60-persistent-storage.rules
+@@ -8,12 +8,6 @@ ACTION=="change", SUBSYSTEM=="scsi", ENV{DEVTYPE}=="scsi_device", TEST=="block",
+ 
+ ACTION!="add|change", GOTO="persistent_storage_end"
+ 
+-# run scsi_id and ata_id on the actual SCSI device
+-SUBSYSTEM=="scsi", ENV{DEVTYPE}=="scsi_device", ENV{ID_SERIAL}!="?*", ATTR{vendor}=="ATA", IMPORT{program}="ata_id --export $root/bsg/$kerne"
+-# ATA/ATAPI devices is of type 0x05 and vendor is usually not ATA
+-SUBSYSTEM=="scsi", ENV{DEVTYPE}=="scsi_device", ENV{ID_SERIAL}!="?*", ATTR{type}=="5", IMPORT{program}="ata_id --export $root/bsg/$kernel"
+-SUBSYSTEM=="scsi", ENV{DEVTYPE}=="scsi_device", ENV{ID_SERIAL}!="?*", IMPORT{program}="scsi_id --whitelisted --export --device $root/bsg/$kernel"
+-
+ SUBSYSTEM!="block", GOTO="persistent_storage_end"
+ 
+ # skip rules for inappropriate block devices
+@@ -53,9 +47,6 @@ KERNEL=="sd*[!0-9]|sr*", ENV{ID_SERIAL}!="?*", SUBSYSTEMS=="scsi", ATTRS{type}==
+ # Run ata_id on non-removable USB Mass Storage (SATA/PATA disks in enclosures)
+ KERNEL=="sd*[!0-9]|sr*", ENV{ID_SERIAL}!="?*", ATTR{removable}=="0", SUBSYSTEMS=="usb", IMPORT{program}="ata_id --export $tempnode"
+ 
+-# import ata_id/scsi_id data from the scsi_device captured above, if available
+-SUBSYSTEMS=="scsi", IMPORT{parent}="ID_*"
+-
+ # USB devices use their own serial number
+ KERNEL=="sd*[!0-9]|sr*", ENV{ID_SERIAL}!="?*", SUBSYSTEMS=="usb", IMPORT{program}="usb_id --export %p"
+ 
+-- 
+2.5.0
+

@@ -5,7 +5,7 @@
 Summary: A userspace implementation of devfs
 Name: udev
 Version: 147
-Release: 2.63%{?dist}.1
+Release: 2.73%{?dist}
 License: GPLv2
 Group: System Environment/Base
 Provides: udev-persistent = %{version}-%{release}
@@ -184,6 +184,21 @@ Patch634: udev-147-ata_id-fixup-all-8-not-only-6-bytes-of-the-fw_rev-st.patch
 Patch635: udev-147-use-ata_id-for-USB-DVD-CD.patch
 Patch636: udev-147-ata-id-no-blank.patch
 Patch637: udev-147-workerlock-inc.patch
+Patch638: 0001-scsi_id-fix-memory-leak.patch
+Patch639: 0002-scsi_id-fix-file-descriptor-leak.patch
+Patch640: 0003-ata_id-Support-SG_IO-version-4-interface.patch
+Patch641: 0004-Run-scsi_id-and-ata_id-on-the-scsi_device-object.patch
+Patch642: 0005-Use-ata_id-not-scsi_id-on-ATAPI-devices.patch
+Patch643: 0006-udev-support-custom-SELinux-labels-for-device-nodes.patch
+Patch644: 0007-rule_generator-prevent-creating-duplicate-entries.patch
+Patch645: 0008-Fix-rule-pattern-match.patch
+Patch646: 0009-Fix-possible-use-of-uninitialized-variable.patch
+Patch647: 0010-udev-fibre-channel-add-support-to-NPIV-FC-virtual-in.patch
+Patch648: 0011-rules-revert-bsg-use-until-the-event-ordering-proble.patch
+Patch649: 0012-rules-run-ata_id-only-on-SPC-3-or-later-optical-driv.patch
+Patch650: 0013-Revert-udev-fibre-channel-add-support-to-NPIV-FC-vir.patch
+Patch651: 0014-udev-path-id-fibre-channel-NPIV-use-fc_vport-s-port_.patch
+Patch652: 0015-core-silently-ignore-error-if-sys-class-firmware-tim.patch
 
 Patch700: udev-nousbutils.patch
 
@@ -465,6 +480,22 @@ glib-based applications using libudev functionality.
 %patch636 -p1
 %patch637 -p1 -b .workerlock2
 
+%patch638 -p1
+%patch639 -p1
+%patch640 -p1
+%patch641 -p1
+%patch642 -p1
+%patch643 -p1
+%patch644 -p1
+%patch645 -p1
+%patch646 -p1
+%patch647 -p1
+%patch648 -p1
+%patch649 -p1
+%patch650 -p1
+%patch651 -p1
+%patch652 -p1
+
 %ifarch s390 s390x
 %patch700 -p1 -b .nousbutils
 %endif
@@ -718,9 +749,41 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0644,root,root) %{_libdir}/pkgconfig/gudev-1.0*
 
 %changelog
-* Thu Nov 12 2015 Michal Sekletar <msekleta@redhat.com> - 147-2.63.1
-- also limit the additional modprobe locked workers (#1281469)
-- 80-drivers.rules: only make an exception for ipmi for modprobe with DRIVER set (#1281467)
+* Fri Apr 08 2016 Michal Sekletar <msekleta@redhat.com> - 147-2.73
+- ignore missing /sys/class/firmware/timeout (#1323883)
+
+* Mon Feb 29 2016 Michal Sekletar <msekleta@redhat.com> - 147-2.72
+- merge different patch for support of NPIV FC virtual interfaces (#1032218)
+
+* Tue Feb 09 2016 Michal Sekletar <msekleta@redhat.com> - 147.2.71
+- fix bug when by-id symlinks for scsi block devices were missing "scsi" prefix (#1301039)
+
+* Mon Feb 01 2016 Michal Sekletar <msekleta@redhat.com> - 147-2.70
+- add support to NPIV FC virtual interfaces (#1032218)
+
+* Thu Jan 28 2016 Michal Sekletar <msekleta@redhat.com> - 147-2.69
+- actually apply previously added patch (#891669)
+
+* Thu Jan 28 2016 Michal Sekletar <msekleta@redhat.com> - 147-2.68
+- fix possible use of uninitialized variable in scsi_id (#891669)
+
+* Wed Jan 27 2016 Michal Sekletar <msekleta@redhat.com> - 147-2.67
+- fix existing rule matching in write_net_rules (#652499)
+
+* Mon Jan 18 2016 Michal Sekletar <msekleta@redhat.com> - 147-2.66
+- prevent creation of duplicate udev rules by write_net_rules helper (#652499)
+- fix memory leak in scsi_id (#891669)
+- introduce SECLABEL{selinux} for setting explicit SELinux labels on device nodes (#1015300)
+- for ATA disks udev will now also create by-id/wwn-* symlinks when appropriate (#1220617)
+
+* Tue Oct 06 2015 Harald Hoyer <harald@redhat.com> 147-2.65
+- 80-drivers.rules: only make an exception for ipmi for
+                    modprobe with DRIVER set
+Resolves: rhbz#1268251
+
+* Thu Oct 01 2015 Harald Hoyer <harald@redhat.com> 147-2.64
+- also limit the additional modprobe locked workers
+Resolves: rhbz#1170313
 
 * Mon Jun 08 2015 Harald Hoyer <harald@redhat.com> 147-2.63
 - do not erase disks with ATA commands

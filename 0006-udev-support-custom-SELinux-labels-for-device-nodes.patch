@@ -1,0 +1,331 @@
+From 4a06c42db6b72cfc205f1281a58cbfcf9468ad18 Mon Sep 17 00:00:00 2001
+From: Michal Sekletar <msekleta@redhat.com>
+Date: Mon, 23 Nov 2015 15:18:10 +0100
+Subject: [PATCH] udev: support custom SELinux labels for device nodes
+
+This commit contains changes introduced in upstream (modulo smack
+support) by commits
+
+c26547d612733371494330e26c7d3604a5dba3d9
+463b5dbb0d10227230468ee3adc3b50fce7d0707
+
+Resolves: #1015300
+---
+ libudev/libudev-list.c            |  3 +++
+ libudev/libudev-private.h         |  2 ++
+ libudev/libudev-selinux-private.c | 12 ++++++++++++
+ udev/udev-event.c                 |  6 ++++--
+ udev/udev-node.c                  | 41 ++++++++++++++++++++++++++-------------
+ udev/udev-rules.c                 | 29 +++++++++++++++++++++++++++
+ udev/udev.h                       |  5 +++--
+ udev/udev.xml                     |  7 +++++++
+ 8 files changed, 88 insertions(+), 17 deletions(-)
+
+diff --git a/libudev/libudev-list.c b/libudev/libudev-list.c
+index f6637fc..a044e78 100644
+--- a/libudev/libudev-list.c
++++ b/libudev/libudev-list.c
+@@ -188,6 +188,9 @@ void udev_list_cleanup_entries(struct udev *udev, struct udev_list_node *list)
+ 
+ struct udev_list_entry *udev_list_get_entry(struct udev_list_node *list)
+ {
++	if (!list)
++		return NULL;
++
+ 	if (udev_list_is_empty(list))
+ 		return NULL;
+ 	return list_node_to_entry(list->next);
+diff --git a/libudev/libudev-private.h b/libudev/libudev-private.h
+index b2ec7b3..0835312 100644
+--- a/libudev/libudev-private.h
++++ b/libudev/libudev-private.h
+@@ -226,11 +226,13 @@ static inline void udev_selinux_exit(struct udev *udev) {}
+ static inline void udev_selinux_lsetfilecon(struct udev *udev, const char *file, unsigned int mode) {}
+ static inline void udev_selinux_setfscreatecon(struct udev *udev, const char *file, unsigned int mode) {}
+ static inline void udev_selinux_resetfscreatecon(struct udev *udev) {}
++static inline int label_apply(const char *path, const char *label) {}
+ #else
+ void udev_selinux_init(struct udev *udev);
+ void udev_selinux_exit(struct udev *udev);
+ void udev_selinux_lsetfilecon(struct udev *udev, const char *file, unsigned int mode);
+ void udev_selinux_setfscreatecon(struct udev *udev, const char *file, unsigned int mode);
+ void udev_selinux_resetfscreatecon(struct udev *udev);
++int label_apply(const char *path, const char *label);
+ #endif
+ #endif
+diff --git a/libudev/libudev-selinux-private.c b/libudev/libudev-selinux-private.c
+index 84f8b6a..c536c66 100644
+--- a/libudev/libudev-selinux-private.c
++++ b/libudev/libudev-selinux-private.c
+@@ -81,3 +81,15 @@ void udev_selinux_resetfscreatecon(struct udev *udev)
+ 	if (setfscreatecon(selinux_prev_scontext) < 0)
+ 		err(udev, "setfscreatecon failed: %m\n");
+ }
++
++int label_apply(const char *path, const char *label)
++{
++        int r = 0;
++
++        if (!selinux_enabled)
++                return 0;
++
++        r = setfilecon(path, (char *)label);
++
++        return r;
++}
+diff --git a/udev/udev-event.c b/udev/udev-event.c
+index d615e3b..6d2d91f 100644
+--- a/udev/udev-event.c
++++ b/udev/udev-event.c
+@@ -41,6 +41,7 @@ struct udev_event *udev_event_new(struct udev_device *dev)
+ 	event->dev = dev;
+ 	event->udev = udev_device_get_udev(dev);
+ 	udev_list_init(&event->run_list);
++	udev_list_init(&event->seclabel_list);
+ 	event->mode = 0660;
+ 	dbg(event->udev, "allocated event %p\n", event);
+ 	return event;
+@@ -51,6 +52,7 @@ void udev_event_unref(struct udev_event *event)
+ 	if (event == NULL)
+ 		return;
+ 	udev_list_cleanup_entries(event->udev, &event->run_list);
++	udev_list_cleanup_entries(event->udev, &event->seclabel_list);
+ 	free(event->tmp_node);
+ 	free(event->program_result);
+ 	free(event->name);
+@@ -380,7 +382,7 @@ subst:
+ 				 minor(udev_device_get_devnum(dev)));
+ 			if (event->tmp_node == NULL)
+ 				break;
+-			udev_node_mknod(dev, event->tmp_node, makedev(0, 0), 0600, 0, 0);
++			udev_node_mknod(dev, event->tmp_node, makedev(0, 0), 0600, 0, 0, NULL);
+ 			l = util_strpcpy(&s, l, event->tmp_node);
+ 			break;
+ 		}
+@@ -619,7 +621,7 @@ int udev_event_execute_rules(struct udev_event *event, struct udev_rules *rules)
+ 		if (event->mode == 0600 && event->gid > 0)
+ 		  event->mode = 0660;
+ 		
+-		err = udev_node_add(dev, event->mode, event->uid, event->gid);
++		err = udev_node_add(dev, event->mode, event->uid, event->gid, &event->seclabel_list);
+ exit_add:
+ 		if (delete_kdevnode && udev_device_get_knodename(dev) != NULL) {
+ 			struct stat stats;
+diff --git a/udev/udev-node.c b/udev/udev-node.c
+index 54ad320..da817a6 100644
+--- a/udev/udev-node.c
++++ b/udev/udev-node.c
+@@ -33,9 +33,10 @@
+ 
+ #define TMP_FILE_EXT		".udev-tmp"
+ 
+-int udev_node_mknod(struct udev_device *dev, const char *file, dev_t devnum, mode_t mode, uid_t uid, gid_t gid)
++int udev_node_mknod(struct udev_device *dev, const char *file, dev_t devnum, mode_t mode, uid_t uid, gid_t gid, struct udev_list_node *seclabel_list)
+ {
+ 	struct udev *udev = udev_device_get_udev(dev);
++	struct udev_list_entry *entry;
+ 	struct stat stats;
+ 	int err = 0;
+ 
+@@ -53,13 +54,12 @@ int udev_node_mknod(struct udev_device *dev, const char *file, dev_t devnum, mod
+ 	if (lstat(file, &stats) == 0) {
+ 		if (((stats.st_mode & S_IFMT) == (mode & S_IFMT)) && (stats.st_rdev == devnum)) {
+ 			info(udev, "preserve file '%s', because it has correct dev_t\n", file);
+-			if (stats.st_mode != mode || stats.st_uid != uid || stats.st_gid != gid) {
++
++			if (stats.st_mode != mode || stats.st_uid != uid || stats.st_gid != gid)
+ 				info(udev, "set permissions %s, %#o, uid=%u, gid=%u\n", file, mode, uid, gid);
+-				chmod(file, mode);
+-				chown(file, uid, gid);
+-			} else {
++			else
+ 				info(udev, "preserve permissions %s, %#o, uid=%u, gid=%u\n", file, mode, uid, gid);
+-			}
++
+ 			/* set selinux file context on add events */
+ 			if (strcmp(udev_device_get_action(dev), "add") == 0)
+ 				udev_selinux_lsetfilecon(udev, file, mode);
+@@ -87,8 +87,6 @@ int udev_node_mknod(struct udev_device *dev, const char *file, dev_t devnum, mod
+ 				goto exit;
+ 			}
+ 			info(udev, "set permissions %s, %#o, uid=%u, gid=%u\n", file, mode, uid, gid);
+-			chmod(file, mode);
+-			chown(file, uid, gid);
+ 		}
+ 	} else {
+ 		info(udev, "mknod(%s, %#o, (%u,%u))\n", file, mode, major(devnum), minor(devnum));
+@@ -105,9 +103,26 @@ int udev_node_mknod(struct udev_device *dev, const char *file, dev_t devnum, mod
+ 		if (err != 0)
+ 			err(udev, "mknod(%s, %#o, (%u,%u) failed: %m\n", file, mode, major(devnum), minor(devnum));
+ 		info(udev, "set permissions %s, %#o, uid=%u, gid=%u\n", file, mode, uid, gid);
+-		chmod(file, mode);
+-		chown(file, uid, gid);
+ 	}
++
++	chmod(file, mode);
++	chown(file, uid, gid);
++
++	udev_list_entry_foreach(entry, udev_list_get_entry(seclabel_list)) {
++		const char *name, *label;
++
++		name = udev_list_entry_get_name(entry);
++		label = udev_list_entry_get_value(entry);
++
++		if (strcmp(name, "selinux") == 0) {
++			if (label_apply(file, label) < 0)
++				err(udev, "SECLABEL: failed to set SELinux label '%s'", label);
++			else
++				dbg(udev, "SECLABEL: set SELinux label '%s'", label);
++		} else
++			err(udev, "SECLABEL: unknown subsystem, ignoring '%s'='%s'", name, label);
++	}
++
+ exit:
+ 	return err;
+ }
+@@ -363,7 +378,7 @@ void udev_node_update_old_links(struct udev_device *dev, struct udev_device *dev
+ 	}
+ }
+ 
+-int udev_node_add(struct udev_device *dev, mode_t mode, uid_t uid, gid_t gid)
++int udev_node_add(struct udev_device *dev, mode_t mode, uid_t uid, gid_t gid, struct udev_list_node *seclabel_list)
+ {
+ 	struct udev *udev = udev_device_get_udev(dev);
+ 	int i;
+@@ -376,7 +391,7 @@ int udev_node_add(struct udev_device *dev, mode_t mode, uid_t uid, gid_t gid)
+ 	     major(udev_device_get_devnum(dev)), minor(udev_device_get_devnum(dev)),
+ 	     mode, uid, gid);
+ 
+-	if (udev_node_mknod(dev, NULL, makedev(0,0), mode, uid, gid) != 0) {
++	if (udev_node_mknod(dev, NULL, makedev(0,0), mode, uid, gid, seclabel_list) != 0) {
+ 		err = -1;
+ 		goto exit;
+ 	}
+@@ -394,7 +409,7 @@ int udev_node_add(struct udev_device *dev, mode_t mode, uid_t uid, gid_t gid)
+ 			partitionname[sizeof(partitionname)-1] = '\0';
+ 			part_devnum = makedev(major(udev_device_get_devnum(dev)),
+ 					    minor(udev_device_get_devnum(dev)) + i);
+-			udev_node_mknod(dev, partitionname, part_devnum, mode, uid, gid);
++			udev_node_mknod(dev, partitionname, part_devnum, mode, uid, gid, seclabel_list);
+ 		}
+ 	}
+ 
+diff --git a/udev/udev-rules.c b/udev/udev-rules.c
+index 227fe9c..bf079d2 100644
+--- a/udev/udev-rules.c
++++ b/udev/udev-rules.c
+@@ -160,6 +160,7 @@ enum token_type {
+ 	TK_A_GROUP_ID,			/* gid_t */
+ 	TK_A_MODE_ID,			/* mode_t */
+ 	TK_A_ENV,			/* val, attr */
++	TK_A_SECLABEL,			/* val, attr */
+ 	TK_A_NAME,			/* val */
+ 	TK_A_DEVLINK,			/* val */
+ 	TK_A_EVENT_TIMEOUT,		/* int */
+@@ -295,6 +296,7 @@ static const char *token_str(enum token_type type)
+ 		[TK_A_GROUP_ID] =		"A GROUP_ID",
+ 		[TK_A_MODE_ID] =		"A MODE_ID",
+ 		[TK_A_ENV] =			"A ENV",
++		[TK_A_SECLABEL] =		"A SECLABEL",
+ 		[TK_A_NAME] =			"A NAME",
+ 		[TK_A_DEVLINK] =		"A DEVLINK",
+ 		[TK_A_EVENT_TIMEOUT] =		"A EVENT_TIMEOUT",
+@@ -363,6 +365,7 @@ static void dump_token(struct udev_rules *rules, struct token *token)
+ 	case TK_M_ENV:
+ 	case TK_A_ATTR:
+ 	case TK_A_ENV:
++	case TK_A_SECLABEL:
+ 		dbg(rules->udev, "%s %s '%s' '%s'(%s)\n",
+ 		    token_str(type), operation_str(op), attr, value, string_glob_str(glob));
+ 		break;
+@@ -1028,6 +1031,7 @@ static int rule_add_key(struct rule_tmp *rule_tmp, enum token_type type,
+ 	case TK_M_ATTRS:
+ 	case TK_A_ATTR:
+ 	case TK_A_ENV:
++	case TK_A_SECLABEL:
+ 		attr = data;
+ 		token->key.value_off = add_string(rule_tmp->rules, value);
+ 		token->key.attr_off = add_string(rule_tmp->rules, attr);
+@@ -1258,6 +1262,17 @@ static int add_rule(struct udev_rules *rules, char *line,
+ 			continue;
+ 		}
+ 
++		if (strncmp(key, "SECLABEL{", sizeof("SECLABEL{")-1) == 0) {
++			attr = get_key_attribute(rules->udev, key + sizeof("SECLABEL")-1);
++			if (!attr) {
++				err(rules->udev, "error parsing SECLABEL attribute\n");
++				goto invalid;
++			}
++
++			rule_add_key(&rule_tmp, TK_A_SECLABEL, op, value, attr);
++			continue;
++		}
++
+ 		if (strcmp(key, "KERNELS") == 0 ||
+ 		    strcmp(key, "ID") == 0) {
+ 			if (op > OP_MATCH_MAX) {
+@@ -2461,6 +2476,20 @@ int udev_rules_apply_to_event(struct udev_rules *rules, struct udev_event *event
+ 			     &rules->buf[rule->rule.filename_off],
+ 			     rule->rule.filename_line);
+ 			break;
++		case TK_A_SECLABEL: {
++			const char *name, *label;
++
++			name = &rules->buf[cur->key.attr_off];
++			label = &rules->buf[cur->key.value_off];
++
++			if (cur->key.op == OP_ASSIGN || cur->key.op == OP_ASSIGN_FINAL)
++				udev_list_cleanup_entries(event->udev, &event->seclabel_list);
++
++			udev_list_entry_add(event->udev, &event->seclabel_list, name, label, 0, 0);
++
++			dbg(event->udev, "SECLABEL{%s}='%s' %s:%u\n", name, label, &rules->buf[rule->rule.filename_off], rule->rule.filename_line);
++			break;
++		}
+ 		case TK_A_ENV:
+ 			{
+ 				const char *name = &rules->buf[cur->key.attr_off];
+diff --git a/udev/udev.h b/udev/udev.h
+index 50926dd..af0a0be 100644
+--- a/udev/udev.h
++++ b/udev/udev.h
+@@ -42,6 +42,7 @@ struct udev_event {
+ 	mode_t mode;
+ 	uid_t uid;
+ 	gid_t gid;
++	struct udev_list_node seclabel_list;
+ 	struct udev_list_node run_list;
+ 	unsigned int group_final:1;
+ 	unsigned int owner_final:1;
+@@ -89,8 +90,8 @@ void udev_watch_end(struct udev *udev, struct udev_device *dev);
+ struct udev_device *udev_watch_lookup(struct udev *udev, int wd);
+ 
+ /* udev-node.c */
+-int udev_node_mknod(struct udev_device *dev, const char *file, dev_t devnum, mode_t mode, uid_t uid, gid_t gid);
+-int udev_node_add(struct udev_device *dev, mode_t mode, uid_t uid, gid_t gid);
++int udev_node_mknod(struct udev_device *dev, const char *file, dev_t devnum, mode_t mode, uid_t uid, gid_t gid, struct udev_list_node *seclabel);
++int udev_node_add(struct udev_device *dev, mode_t mode, uid_t uid, gid_t gid, struct udev_list_node *seclabel);
+ int udev_node_remove(struct udev_device *dev);
+ void udev_node_update_old_links(struct udev_device *dev, struct udev_device *dev_old);
+ 
+diff --git a/udev/udev.xml b/udev/udev.xml
+index a3093ac..427a79c 100644
+--- a/udev/udev.xml
++++ b/udev/udev.xml
+@@ -190,6 +190,13 @@
+               </listitem>
+             </varlistentry>
+             <varlistentry>
++              <term><option>SECLABEL{<replaceable>module</replaceable>}</option></term>
++              <listitem>
++                <para>Applies the specified Linux Security Module label to the
++                device node. Note that at this time only selinux is supported.</para>
++              </listitem>
++            </varlistentry>
++            <varlistentry>
+               <term><option>ATTR{<replaceable>filename</replaceable>}</option></term>
+               <listitem>
+                 <para>Match sysfs attribute values of the event device. Trailing
+-- 
+2.5.0
+

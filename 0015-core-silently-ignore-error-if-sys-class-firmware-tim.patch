@@ -1,0 +1,30 @@
+From 2ff3c600ad4af638ae0e47f43146d625857e92d9 Mon Sep 17 00:00:00 2001
+From: Michal Sekletar <msekleta@redhat.com>
+Date: Fri, 8 Apr 2016 14:21:18 +0200
+Subject: [PATCH] core: silently ignore error if /sys/class/firmware/timeout is
+ missing
+
+Nevertheless, real question is why is this file missing on some
+occasions during early boot.
+
+Resolves: #1323883
+---
+ udev/udevd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/udev/udevd.c b/udev/udevd.c
+index 1d8507d..6961163 100644
+--- a/udev/udevd.c
++++ b/udev/udevd.c
+@@ -1039,7 +1039,7 @@ int main(int argc, char *argv[])
+ 	/* Set firmware loading timeout to UDEV_EVENT_TIMEOUT */
+ 	fd = open("/sys/class/firmware/timeout", O_RDWR);
+ 	if (fd < 0 ) {
+-		if (errno != EEXIST) err(udev, "error setting /sys/class/firmware/timeout: %m\n");
++		if (errno != ENOENT) err(udev, "error setting /sys/class/firmware/timeout: %m\n");
+ 	} else {
+ 		write(fd, UDEV_EVENT_TIMEOUT_STR, sizeof(UDEV_EVENT_TIMEOUT_STR));
+ 		close(fd);
+-- 
+2.5.5
+

@@ -1,0 +1,38 @@
+From abbf80666cbeaa8197fcf27a20a7e5db19e80d33 Mon Sep 17 00:00:00 2001
+From: Michal Sekletar <msekleta@redhat.com>
+Date: Tue, 22 Dec 2015 11:40:48 +0100
+Subject: [PATCH] rule_generator: prevent creating duplicate entries
+
+Double check if rule already exists and if yes then don't write it
+again.
+
+Resolves: #652499
+---
+ extras/rule_generator/write_net_rules | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/extras/rule_generator/write_net_rules b/extras/rule_generator/write_net_rules
+index c25a27e..40d5266 100644
+--- a/extras/rule_generator/write_net_rules
++++ b/extras/rule_generator/write_net_rules
+@@ -133,6 +133,17 @@ fi
+ basename=${INTERFACE%%[0-9]*}
+ match="$match, KERNEL==\"$basename*\""
+ 
++# build a regular expression that matches the new rule that we want to write
++new_rule_pattern=$(echo "^SUBSYSTEM==\"net\", ACTION==\"add\"$match" | sed -re 's/([\?\*\{\}])/\\\1/g')
++
++# Double check if the new rule has already been written. This happens if
++# multiple add events are generated before the script returns and udevd
++# renames the interfaces. See #765577 for details.
++if egrep -qs "$new_rule_pattern" $RO_RULES_FILE $RULES_FILE; then
++	unlock_rules_file
++	exit 0
++fi
++
+ if [ "$INTERFACE_NAME" ]; then
+ 	# external tools may request a custom name
+ 	COMMENT="$COMMENT (custom name provided by external tool)"
+-- 
+2.5.0
+

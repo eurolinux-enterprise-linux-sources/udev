@@ -1,0 +1,84 @@
+From 1c6c3e2ae16a1b5c854e765232bf6192d658b6ef Mon Sep 17 00:00:00 2001
+From: Michal Sekletar <msekleta@redhat.com>
+Date: Mon, 1 Feb 2016 14:41:50 +0100
+Subject: [PATCH] udev: fibre channel: add support to NPIV FC virtual
+ interfaces.
+
+When using NPIV, you can create multiple virtual HBAs on top of the
+physical one, this means that the physical N_Port can have multiple
+port IDs associated to it.  Suppose a device is assigned to the
+physical HBA and a virtual HBA, the original code uses only the port
+ID of the physical N_Port to build the by-path link and udev ends up
+trying to create two by-path links with the same name.
+
+This patch fixes the problem by using the port ID of the virtual HBA
+whenever it detects that the device belongs to a virtual HBA,
+otherwise it uses the port ID of the physical HBA.
+
+(cherry picked from commit 155a760bcedd11b7f3b430350a46f10736286895)
+
+Resolves: #1032218
+---
+ extras/path_id/path_id.c | 32 ++++++++++++++++++++++++++------
+ 1 file changed, 26 insertions(+), 6 deletions(-)
+
+diff --git a/extras/path_id/path_id.c b/extras/path_id/path_id.c
+index 4ce79df..4fd06bc 100644
+--- a/extras/path_id/path_id.c
++++ b/extras/path_id/path_id.c
+@@ -110,17 +110,38 @@ static struct udev_device *handle_scsi_fibre_channel(struct udev_device *parent,
+ {
+ 	struct udev *udev  = udev_device_get_udev(parent);
+ 	struct udev_device *targetdev;
++	struct udev_device *rportdev;
++	struct udev_device *hostdev;
++	struct udev_device *vportdev;
+ 	struct udev_device *fcdev = NULL;
+ 	const char *port;
+-	char *lun = NULL;;
++	char *lun = NULL;
+ 
+ 	targetdev = udev_device_get_parent_with_subsystem_devtype(parent, "scsi", "scsi_target");
+ 	if (targetdev == NULL)
+ 		return NULL;
+ 
+-	fcdev = udev_device_new_from_subsystem_sysname(udev, "fc_transport", udev_device_get_sysname(targetdev));
+-	if (fcdev == NULL)
+-		return NULL;
++	rportdev = udev_device_get_parent(targetdev);
++	if (rportdev == NULL)
++		goto skip_npiv_check;
++
++	hostdev = udev_device_get_parent(rportdev);
++	if (hostdev == NULL)
++		goto skip_npiv_check;
++
++	vportdev = udev_device_get_parent(hostdev);
++	if (vportdev == NULL)
++		goto skip_npiv_check;
++
++	fcdev = udev_device_new_from_subsystem_sysname(udev, "fc_vports", udev_device_get_sysname(vportdev));
++
++skip_npiv_check:
++	if (!fcdev) {
++		fcdev = udev_device_new_from_subsystem_sysname(udev, "fc_transport", udev_device_get_sysname(targetdev));
++		if (fcdev == NULL)
++			return NULL;
++	}
++
+ 	port = udev_device_get_sysattr_value(fcdev, "port_name");
+ 	if (port == NULL) {
+ 		parent = NULL;
+@@ -129,8 +150,7 @@ static struct udev_device *handle_scsi_fibre_channel(struct udev_device *parent,
+ 
+ 	format_lun_number(parent, &lun);
+ 	path_prepend(path, "fc-%s-%s", port, lun);
+-	if (lun)
+-		free(lun);
++	free(lun);
+ out:
+ 	udev_device_unref(fcdev);
+ 	return parent;
+-- 
+2.5.0
+

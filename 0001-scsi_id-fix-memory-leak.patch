@@ -1,0 +1,39 @@
+From 203ced0635660da7b9b5b7b02ce2df739eb7d873 Mon Sep 17 00:00:00 2001
+From: Michal Sekletar <msekleta@redhat.com>
+Date: Thu, 15 Oct 2015 14:19:06 +0200
+Subject: [PATCH] scsi_id: fix memory leak
+
+(cherry-picked from commit ed142bdb68fdcd5ce591152ce0ec9d29898fbac4)
+
+Resolves: #891669
+---
+ extras/scsi_id/scsi_id.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/extras/scsi_id/scsi_id.c b/extras/scsi_id/scsi_id.c
+index 703d514..b359189 100644
+--- a/extras/scsi_id/scsi_id.c
++++ b/extras/scsi_id/scsi_id.c
+@@ -657,7 +657,6 @@ int main(int argc, char **argv)
+ 			retval = 2;
+ 			goto exit;
+ 		}
+-		free(newargv);
+ 	}
+ 
+ 	/*
+@@ -675,6 +674,11 @@ int main(int argc, char **argv)
+ 	retval = scsi_id(udev, maj_min_dev);
+ 
+ exit:
++	if (newargv) {
++		free(newargv[0]);
++		free(newargv);
++	}
++
+ 	udev_unref(udev);
+ 	udev_log_close();
+ 	return retval;
+-- 
+2.5.0
+
