@@ -5,7 +5,7 @@
 Summary: A userspace implementation of devfs
 Name: udev
 Version: 147
-Release: 2.73%{?dist}.1
+Release: 2.73%{?dist}.2
 License: GPLv2
 Group: System Environment/Base
 Provides: udev-persistent = %{version}-%{release}
@@ -199,7 +199,6 @@ Patch649: 0012-rules-run-ata_id-only-on-SPC-3-or-later-optical-driv.patch
 Patch650: 0013-Revert-udev-fibre-channel-add-support-to-NPIV-FC-vir.patch
 Patch651: 0014-udev-path-id-fibre-channel-NPIV-use-fc_vport-s-port_.patch
 Patch652: 0015-core-silently-ignore-error-if-sys-class-firmware-tim.patch
-Patch653: 0001-core-apply-permissions-only-on-add-events.patch
 
 Patch700: udev-nousbutils.patch
 
@@ -496,7 +495,6 @@ glib-based applications using libudev functionality.
 %patch650 -p1
 %patch651 -p1
 %patch652 -p1
-%patch653 -p1
 
 %ifarch s390 s390x
 %patch700 -p1 -b .nousbutils
@@ -751,6 +749,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0644,root,root) %{_libdir}/pkgconfig/gudev-1.0*
 
 %changelog
+* Tue Aug 30 2016 Michal Sekletar <msekleta@redhat.com> - 147-2.73.2
+- revert of the last patch (#1371457)
+
 * Sun Jul 31 2016 Michal Sekletar <msekleta@redhat.com> - 147-2.73.1
 - apply permissions only on add events or when new device node is created (#1362038)
 
