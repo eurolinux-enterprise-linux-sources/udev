@@ -1,0 +1,30 @@
+From c9fbbd6ea2f92e037cdaba6b7116d3b3e904696a Mon Sep 17 00:00:00 2001
+From: Martin Pitt <martin.pitt@ubuntu.com>
+Date: Sun, 1 Aug 2010 21:59:58 +0200
+Subject: [PATCH] keymap: Generalize Samsung keymaps
+
+Fortunato Ventre (voRia) <vorione@gmail.com> reports a lot more Samsung models
+which need the "samsung-other" keymap. Instead of eternally playing catchup,
+apply it to all Samsung models for now, and keep the two known special cases.
+
+https://launchpad.net/bugs/554066
+---
+ extras/keymap/95-keymap.rules |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/extras/keymap/95-keymap.rules b/extras/keymap/95-keymap.rules
+index 6e37067..13b5571 100644
+--- a/extras/keymap/95-keymap.rules
++++ b/extras/keymap/95-keymap.rules
+@@ -115,7 +115,7 @@ ENV{DMI_VENDOR}=="INVENTEC", ATTR{[dmi/id]product_name}=="SYMPHONY 6.0/7.0", RUN
+ 
+ ENV{DMI_VENDOR}=="MAXDATA", ATTR{[dmi/id]product_name}=="Pro 7000*", RUN+="keymap $name maxdata-pro_7000"
+ 
+-ENV{DMI_VENDOR}=="[sS][aA][mM][sS][uU][nN][gG]*", ATTR{[dmi/id]product_name}=="*NC10*|*NC20*|*N128*|*N130*|*N210*|*SP55S*|*SQ45S70S*|*SX60P*|*SX22S*|*SX30S*|*R59P/R60P/R61P*|*SR70S/SR71S*|*Q210*|*Q310*|*X05*|*P560*|*R560*", RUN+="keymap $name samsung-other"
++ENV{DMI_VENDOR}=="[sS][aA][mM][sS][uU][nN][gG]*", RUN+="keymap $name samsung-other"
+ ENV{DMI_VENDOR}=="[sS][aA][mM][sS][uU][nN][gG]*", ATTR{[dmi/id]product_name}=="*SX20S*", RUN+="keymap $name samsung-sx20s"
+ ENV{DMI_VENDOR}=="[sS][aA][mM][sS][uU][nN][gG]*", ATTR{[dmi/id]product_name}=="SQ1US", RUN+="keymap $name samsung-sq1us"
+ 
+-- 
+1.7.3.2
+

@@ -1,0 +1,26 @@
+From af3f56ff71e9ed4b98dcaa797795f3ff5d3be0cf Mon Sep 17 00:00:00 2001
+From: Kamal Mostafa <kamal@canonical.com>
+Date: Mon, 19 Apr 2010 08:54:04 +0200
+Subject: [PATCH] keymap: Add force-release quirk for Coolbox QBook 270-02
+
+https://launchpad.net/bugs/420473
+
+Signed-off-by: Martin Pitt <martin.pitt@ubuntu.com>
+---
+ extras/keymap/95-keyboard-force-release.rules |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/extras/keymap/95-keyboard-force-release.rules b/extras/keymap/95-keyboard-force-release.rules
+index b75d6d2..4fd925f 100644
+--- a/extras/keymap/95-keyboard-force-release.rules
++++ b/extras/keymap/95-keyboard-force-release.rules
+@@ -25,4 +25,6 @@ ENV{DMI_VENDOR}=="Dell Inc.", ATTR{[dmi/id]product_name}=="Studio 1557|Studio 15
+ 
+ ENV{DMI_VENDOR}=="FUJITSU SIEMENS", ATTR{[dmi/id]product_name}=="AMILO Si 1848+u", RUN+="keyboard-force-release.sh $devpath common-volume-keys"
+ 
++ENV{DMI_VENDOR}=="FOXCONN", ATTR{[dmi/id]product_name}=="QBOOK", RUN+="keyboard-force-release.sh $devpath common-volume-keys"
++
+ LABEL="force_release_end"
+-- 
+1.7.3.2
+

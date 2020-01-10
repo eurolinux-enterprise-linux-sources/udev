@@ -1,0 +1,26 @@
+diff -up udev-147/udev/udevd.c.workerlock2 udev-147/udev/udevd.c
+--- udev-147/udev/udevd.c.workerlock2	2015-10-01 14:14:20.273536701 +0200
++++ udev-147/udev/udevd.c	2015-10-01 16:23:55.225125513 +0200
+@@ -399,8 +399,8 @@ static void event_run(struct event *even
+ 	}
+ 
+         workers_locked = udev_lock_getncnt();
+-        if (workers_locked < 0)
+-                workers_locked = 0;
++        /* also limit additional workers */
++        workers_locked = (workers_locked > max_childs ? max_childs : workers_locked);
+ 
+ 	if (childs >= (max_childs + workers_locked) ) {
+                 dbg(event->udev, "maximum number (%i) of childs reached\n", childs);
+diff -up udev-147/udev/udev.h.workerlock2 udev-147/udev/udev.h
+--- udev-147/udev/udev.h.workerlock2	2015-10-01 14:13:47.227902036 +0200
++++ udev-147/udev/udev.h	2015-10-01 14:13:47.243902855 +0200
+@@ -79,7 +79,7 @@ int udev_lock_init(void);
+ int udev_lock_teardown(void);
+ int udev_lock_down(void);
+ int udev_lock_up(void);
+-unsigned int udev_lock_getzcnt(void);
++unsigned int udev_lock_getncnt(void);
+ 
+ /* udev-watch.c */
+ int udev_watch_init(struct udev *udev);

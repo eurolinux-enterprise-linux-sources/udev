@@ -1,0 +1,89 @@
+From db57bdda04e20667f510262d045c2af6fe335931 Mon Sep 17 00:00:00 2001
+From: Kamal Mostafa <kamal@canonical.com>
+Date: Mon, 19 Apr 2010 08:48:34 +0200
+Subject: [PATCH] keymap: Unite laptop models needing common volume-key release quirk
+
+Many laptop models need the same volume-key release quirk. Currently, two
+models have identical force-release-maps/ keymap files (dell-studio-1557 and
+fujitsu-amilo-si1848) and two more need to be added (Mitac and Coolbox QBook).
+
+This replaces the identical force-release-maps files with one
+'common-volume-keys' file to make adding new models easier.
+
+There is no obvious DMI commonality between the models needing the quirk (i.e.
+they do not all share the same BIOS), so it will remain necessary to scan for
+each model separately in 95-keyboard-force-release.rules.
+
+https://launchpad.net/bugs/565459
+
+Signed-off-by: Martin Pitt <martin.pitt@ubuntu.com>
+---
+ Makefile.am                                        |    3 +--
+ extras/keymap/95-keyboard-force-release.rules      |    4 ++--
+ .../keymap/force-release-maps/common-volume-keys   |    3 +++
+ extras/keymap/force-release-maps/dell-studio-1557  |    3 ---
+ .../keymap/force-release-maps/fujitsu-amilo-si1848 |    3 ---
+ 5 files changed, 6 insertions(+), 10 deletions(-)
+ create mode 100644 extras/keymap/force-release-maps/common-volume-keys
+ delete mode 100755 extras/keymap/force-release-maps/dell-studio-1557
+ delete mode 100644 extras/keymap/force-release-maps/fujitsu-amilo-si1848
+
+diff --git a/Makefile.am b/Makefile.am
+index 68a68d9..076db8c 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -540,8 +540,7 @@ dist_udevkeymap_DATA = \
+ udevkeymapforcereldir = $(libexecdir)/keymaps/force-release
+ dist_udevkeymapforcerel_DATA = \
+ 	extras/keymap/force-release-maps/samsung-other \
+-	extras/keymap/force-release-maps/fujitsu-amilo-si1848 \
+-	extras/keymap/force-release-maps/dell-studio-1557
++	extras/keymap/force-release-maps/common-volume-keys
+ 
+ extras/keymap/keys.txt: $(INCLUDE_PREFIX)/linux/input.h
+ 	mkdir -p extras/keymap
+diff --git a/extras/keymap/95-keyboard-force-release.rules b/extras/keymap/95-keyboard-force-release.rules
+index b973614..b75d6d2 100644
+--- a/extras/keymap/95-keyboard-force-release.rules
++++ b/extras/keymap/95-keyboard-force-release.rules
+@@ -21,8 +21,8 @@ ENV{DMI_VENDOR}="$attr{[dmi/id]sys_vendor}"
+ 
+ ENV{DMI_VENDOR}=="[sS][aA][mM][sS][uU][nN][gG]*", ATTR{[dmi/id]product_name}=="*N130*|*N140*|*SR70S/SR71S*|*Q210/P210*", RUN+="keyboard-force-release.sh $devpath samsung-other"
+ 
+-ENV{DMI_VENDOR}=="Dell Inc.", ATTR{[dmi/id]product_name}=="Studio 1557|Studio 1558", RUN+="keyboard-force-release.sh $devpath dell-studio-1557"
++ENV{DMI_VENDOR}=="Dell Inc.", ATTR{[dmi/id]product_name}=="Studio 1557|Studio 1558", RUN+="keyboard-force-release.sh $devpath common-volume-keys"
+ 
+-ENV{DMI_VENDOR}=="FUJITSU SIEMENS", ATTR{[dmi/id]product_name}=="AMILO Si 1848+u", RUN+="keyboard-force-release.sh $devpath fujitsu-amilo-si1848"
++ENV{DMI_VENDOR}=="FUJITSU SIEMENS", ATTR{[dmi/id]product_name}=="AMILO Si 1848+u", RUN+="keyboard-force-release.sh $devpath common-volume-keys"
+ 
+ LABEL="force_release_end"
+diff --git a/extras/keymap/force-release-maps/common-volume-keys b/extras/keymap/force-release-maps/common-volume-keys
+new file mode 100644
+index 0000000..3a7654d
+--- /dev/null
++++ b/extras/keymap/force-release-maps/common-volume-keys
+@@ -0,0 +1,3 @@
++0xa0 #mute
++0xae #volume down
++0xb0 #volume up
+diff --git a/extras/keymap/force-release-maps/dell-studio-1557 b/extras/keymap/force-release-maps/dell-studio-1557
+deleted file mode 100755
+index 1718673..0000000
+--- a/extras/keymap/force-release-maps/dell-studio-1557
++++ /dev/null
+@@ -1,3 +0,0 @@
+-0xa0 #mute
+-0xae #volume up
+-0xb0 #volume down
+diff --git a/extras/keymap/force-release-maps/fujitsu-amilo-si1848 b/extras/keymap/force-release-maps/fujitsu-amilo-si1848
+deleted file mode 100644
+index 1718673..0000000
+--- a/extras/keymap/force-release-maps/fujitsu-amilo-si1848
++++ /dev/null
+@@ -1,3 +0,0 @@
+-0xa0 #mute
+-0xae #volume up
+-0xb0 #volume down
+-- 
+1.7.3.2
+

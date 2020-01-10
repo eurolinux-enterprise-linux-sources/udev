@@ -1,0 +1,15 @@
+--- udev-147/udev/udev.xml	2012-03-01 19:11:51.065089012 +0100
++++ udev-147/udev/udev.xml	2012-03-01 19:11:20.298151673 +0100
+@@ -484,6 +484,12 @@
+ 		      writing, a change uevent will be synthesised.</para>
+                     </listitem>
+                   </varlistentry>
++                  <varlistentry>
++                    <term><option>nowatch</option></term>
++                    <listitem>
++                      <para>Disable the watching of a device node with inotify.</para>
++                    </listitem>
++                  </varlistentry>
+                 </variablelist>
+               </listitem>
+             </varlistentry>

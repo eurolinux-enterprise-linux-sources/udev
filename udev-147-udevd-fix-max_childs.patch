@@ -1,0 +1,36 @@
+From 7c0ebc78c26f8375fe4a0e126e4900c19fe53c4c Mon Sep 17 00:00:00 2001
+From: RH udev team <udev-maint@redhat.com>
+Date: Fri, 26 Jul 2013 15:13:37 +0200
+Subject: [PATCH] udevd: fix max_childs
+
+---
+ udev/udevd.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/udev/udevd.c b/udev/udevd.c
+index 6d26984..e445cb2 100644
+--- a/udev/udevd.c
++++ b/udev/udevd.c
+@@ -41,6 +41,8 @@
+ #include <sys/stat.h>
+ #include <sys/ioctl.h>
+ #include <sys/inotify.h>
++#include <sys/resource.h>
++#include <sched.h>
+ 
+ #include "udev.h"
+ 
+@@ -1034,8 +1036,8 @@ int main(int argc, char *argv[])
+ 
+ 		if (sched_getaffinity (0, sizeof (cpu_set), &cpu_set) == 0) {
+ 			cpu_num = CPU_COUNT (&cpu_set);
+-			if (children_max > 8 + cpu_num * 2)
+-				children_max = 8 + cpu_num * 2;
++                        if (max_childs > (signed)(8 + cpu_num * 2))
++                                max_childs = 8 + cpu_num * 2;
+ 		}
+ 	}
+ 
+-- 
+1.8.3.1
+

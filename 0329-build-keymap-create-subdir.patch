@@ -1,0 +1,24 @@
+From 6714dc2015bc1aea08e3b5b8ae0557c7691191e6 Mon Sep 17 00:00:00 2001
+From: Marco d'Itri <md@linux.it>
+Date: Thu, 7 Jan 2010 16:16:00 +0100
+Subject: [PATCH] build: keymap - create subdir
+
+---
+ Makefile.am |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/Makefile.am b/Makefile.am
+index 8fd6e32..743c5b8 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -547,6 +547,7 @@ dist_udevkeymapforcerel_DATA = \
+ 	extras/keymap/keymaps/force-release/samsung-other
+ 
+ extras/keymap/keys.txt: /usr/include/linux/input.h
++	mkdir -p extras/keymap
+ 	$(AM_V_GEN)$(AWK) '/^#define.*KEY_[^ ]+[ \t]+[0-9]/ { if ($$2 != "KEY_MAX") { print $$2 } }' < $< | sed 's/^KEY_COFFEE$$/KEY_SCREENLOCK/' > $@
+ 
+ extras/keymap/keys-from-name.gperf: extras/keymap/keys.txt
+-- 
+1.7.3.2
+

@@ -1,0 +1,29 @@
+From 422449339aebde83a45108b015f4e02b59b5c2c0 Mon Sep 17 00:00:00 2001
+From: Yin Kangkai <kangkai.yin@intel.com>
+Date: Fri, 7 May 2010 15:05:21 +0800
+Subject: [PATCH] keymap: Add keymap quirk of WebCam key for MSI netbooks.
+
+I've verified that this patch fixes MSI U100, N014, U135
+http://bugs.meego.com/show_bug.cgi?id=1741
+
+Signed-off-by: Yin Kangkai <kangkai.yin@intel.com>
+Signed-off-by: Martin Pitt <martin.pitt@ubuntu.com>
+---
+ extras/keymap/keymaps/micro-star |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/extras/keymap/keymaps/micro-star b/extras/keymap/keymaps/micro-star
+index 0469434..0de5ae6 100644
+--- a/extras/keymap/keymaps/micro-star
++++ b/extras/keymap/keymaps/micro-star
+@@ -6,6 +6,7 @@
+ 0xE2 bluetooth # satellite dish2
+ 0xE4 f22 # Fn-F3   Touchpad disable
+ 0xEC email # envelope button
++0xEE camera # Fn-F6 camera disable
+ 0xF6 wlan # satellite dish1
+ 0xF7 brightnessdown # Fn-F4
+ 0xF8 brightnessup # Fn-F5
+-- 
+1.7.3.2
+

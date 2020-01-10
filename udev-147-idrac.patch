@@ -1,0 +1,12 @@
+diff -up udev-147/extras/cdrom_id/cdrom_id.c.idrac udev-147/extras/cdrom_id/cdrom_id.c
+--- udev-147/extras/cdrom_id/cdrom_id.c.idrac	2011-02-09 16:40:12.000000000 +0100
++++ udev-147/extras/cdrom_id/cdrom_id.c	2011-02-09 16:41:06.000000000 +0100
+@@ -747,7 +747,7 @@ static int cd_media_toc(struct udev *ude
+ {
+ 	struct scsi_cmd sc;
+ 	unsigned char header[12];
+-	unsigned char toc[2048];
++	unsigned char toc[65536];
+ 	unsigned int len, i, num_tracks;
+ 	unsigned char *p;
+ 	int err;

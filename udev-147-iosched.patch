@@ -1,0 +1,80 @@
+diff -up udev-147/extras/iosched/80-iosched.rules.git504 udev-147/extras/iosched/80-iosched.rules
+--- udev-147/extras/iosched/80-iosched.rules.git504	2011-07-25 15:43:24.000000000 +0200
++++ udev-147/extras/iosched/80-iosched.rules	2011-07-25 15:43:24.000000000 +0200
+@@ -0,0 +1,14 @@
++#
++# CFQ's default tunings are geared towards slow SATA disks.  If we detect
++# anything else, we change the tunings to drive deeper queue depths and
++# keep the device busy.
++#
++SUBSYSTEM!="block", GOTO="end_iosched"
++KERNEL=="dm-*", GOTO="end_iosched"
++ENV{DEVTYPE}=="partition", GOTO="end_iosched"
++ACTION!="add|change", GOTO="end_iosched"
++ENV{ID_BUS}=="ata", GOTO="end_iosched"
++ATTR{queue/scheduler}!="*\[cfq\]", GOTO="end_iosched"
++TEST=="queue/iosched/slice_idle", ATTR{queue/iosched/slice_idle}="0"
++TEST=="queue/iosched/quantum",    ATTR{queue/iosched/quantum}="32"
++LABEL="end_iosched"
+diff -up udev-147/extras/iosched/80-mpath-iosched.rules.git504 udev-147/extras/iosched/80-mpath-iosched.rules
+--- udev-147/extras/iosched/80-mpath-iosched.rules.git504	2011-07-25 15:43:25.000000000 +0200
++++ udev-147/extras/iosched/80-mpath-iosched.rules	2011-07-25 15:43:25.000000000 +0200
+@@ -0,0 +1,9 @@
++SUBSYSTEM!="block", GOTO="end_mpath_iosched"
++ENV{DEVTYPE}=="partition", GOTO="end_mpath_iosched"
++KERNEL!="dm-*", GOTO="end_mpath_iosched"
++ACTION!="change", GOTO="end_mpath_iosched"
++ATTR{queue/scheduler}!="*\[cfq\]", GOTO="end_mpath_iosched"
++ENV{DM_UUID}!="mpath-?*", GOTO="end_mpath_iosched"
++ENV{DM_ACTION}=="PATH_FAILED", GOTO="end_mpath_iosched"
++RUN+="mpath-iosched.sh"
++LABEL="end_mpath_iosched"
+diff -up udev-147/extras/iosched/mpath-iosched.sh.git504 udev-147/extras/iosched/mpath-iosched.sh
+--- udev-147/extras/iosched/mpath-iosched.sh.git504	2011-07-25 15:43:25.000000000 +0200
++++ udev-147/extras/iosched/mpath-iosched.sh	2011-07-25 15:43:25.000000000 +0200
+@@ -0,0 +1,26 @@
++#!/bin/bash
++
++#
++# For the request-based multipath driver, the I/O scheduler runs on the
++# multipath device, not the underlying "slave" devices.  This script
++# checks the ID_BUS attribute for each of the slave devices.  If it finds
++# an ata device, it leaves the I/O scheduler tunings alone.  For any other
++# device, we tune the I/O scheduler to try to keep the device busy.
++#
++PATH=/sbin:$PATH
++
++needs_tuning=1
++for slave in /sys${DEVPATH}/slaves/*; do
++	bus_type=$(udevadm info --query=property --path=$slave | grep ID_BUS | awk -F= '{print $2}')
++	if [ "$bus_type" = "ata" ]; then
++		needs_tuning=0
++		break
++	fi
++done
++
++if [ $needs_tuning -eq 1 ]; then
++	echo 0 > /sys${DEVPATH}/queue/iosched/slice_idle
++	echo 32 > /sys${DEVPATH}/queue/iosched/quantum
++fi
++
++exit 0
+diff -up udev-147/Makefile.am.git504 udev-147/Makefile.am
+--- udev-147/Makefile.am.git504	2011-07-25 15:43:24.000000000 +0200
++++ udev-147/Makefile.am	2011-07-25 15:44:54.000000000 +0200
+@@ -563,6 +563,15 @@ keymaps-distcheck-hook: extras/keymap/ke
+ 	$(top_srcdir)/extras/keymap/check-keymaps.sh $(top_srcdir) $^
+ DISTCHECK_HOOKS = keymaps-distcheck-hook
+ 
++# ------------------------------------------------------------------------------
++# iosched - optimize I/O scheduler tunings
++# ------------------------------------------------------------------------------
++EXTRA_DIST += extras/iosched/80-iosched.rules \
++	extras/iosched/80-mpath-iosched.rules extras/iosched/mpath-iosched.sh
++dist_udevrules_DATA += extras/iosched/80-iosched.rules \
++	extras/iosched/80-mpath-iosched.rules
++dist_libexec_SCRIPTS += extras/iosched/mpath-iosched.sh
++
+ endif # ENABLE_EXTRAS
+ 
+ # ------------------------------------------------------------------------------

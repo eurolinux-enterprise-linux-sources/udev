@@ -1,0 +1,32 @@
+From 1f819a177630863aca7bf651dc429aa4eb3ba3af Mon Sep 17 00:00:00 2001
+From: Martin Pitt <martin.pitt@ubuntu.com>
+Date: Sun, 27 Dec 2009 11:42:21 +0100
+Subject: [PATCH] keymap: Add LG X110
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+This is an MSI Wind clone.
+
+Reported on hal ML by Ozan Çağlayan <ozan@pardus.org.tr>
+---
+ extras/keymap/95-keymap.rules |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+diff --git a/extras/keymap/95-keymap.rules b/extras/keymap/95-keymap.rules
+index a98055d..d123c10 100644
+--- a/extras/keymap/95-keymap.rules
++++ b/extras/keymap/95-keymap.rules
+@@ -86,6 +86,9 @@ ENV{DMI_VENDOR}=="FUJITSU*", ATTR{[dmi/id]product_name}=="*AMILO Pro Edition V35
+ ENV{DMI_VENDOR}=="FUJITSU*", ATTR{[dmi/id]product_name}=="*Amilo Si 1520*", RUN+="keymap $name fujitsu-amilo_si_1520"
+ ENV{DMI_VENDOR}=="FUJITSU*", ATTR{[dmi/id]product_name}=="AMILO*M*", RUN+="keymap $name 0x97 prog2 0x9F prog1"
+ 
++# MSI Wind clone
++ENV{DMI_VENDOR}=="LG*", ATTR{[dmi/id]product_name}=="*X110*", RUN+="keymap $name micro-star"
++
+ ENV{DMI_VENDOR}=="MEDION*", ATTR{[dmi/id]product_name}=="*FID2060*", RUN+="keymap $name medion-fid2060"
+ ENV{DMI_VENDOR}=="MEDIONNB", ATTR{[dmi/id]product_name}=="A555*", RUN+="keymap $name medionnb-a555"
+ 
+-- 
+1.7.3.2
+

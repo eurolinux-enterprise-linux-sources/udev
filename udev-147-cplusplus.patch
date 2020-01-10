@@ -1,0 +1,36 @@
+From 3fac12b9a05f1849f7b1373060ade18269839856 Mon Sep 17 00:00:00 2001
+From: Daniel Elstner <daniel.kitta@gmail.com>
+Date: Mon, 14 Dec 2009 20:15:20 +0000
+Subject: libudev: wrap in extern "C" block for C++
+
+When libudev.h is included from C++ code, wrap the declarations in an
+extern "C" { ... } block.  This tells the C++ compiler that symbols
+are exported with C linkage and no name-mangling.
+---
+diff --git a/libudev/libudev.h b/libudev/libudev.h
+index 4bcf442..ad11059 100644
+--- a/libudev/libudev.h
++++ b/libudev/libudev.h
+@@ -16,6 +16,10 @@
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ 
++#ifdef __cplusplus
++extern "C" {
++#endif
++
+ /*
+  * udev - library context
+  * 
+@@ -158,4 +162,9 @@ int udev_queue_get_seqnum_sequence_is_finished(struct udev_queue *udev_queue,
+ 					       unsigned long long int start, unsigned long long int end);
+ struct udev_list_entry *udev_queue_get_queued_list_entry(struct udev_queue *udev_queue);
+ struct udev_list_entry *udev_queue_get_failed_list_entry(struct udev_queue *udev_queue);
++
++#ifdef __cplusplus
++} /* extern "C" */
++#endif
++
+ #endif
+--
+cgit v0.9.0.2-2-gbebe

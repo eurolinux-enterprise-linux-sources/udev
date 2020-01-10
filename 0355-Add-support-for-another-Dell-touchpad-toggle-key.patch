@@ -1,0 +1,29 @@
+From 6de84dee053a74c95f2200d6d94cfeb61516bc40 Mon Sep 17 00:00:00 2001
+From: Jerone Young <jerone.young@canonical.com>
+Date: Tue, 6 Apr 2010 16:08:21 -0500
+Subject: [PATCH] Add support for another Dell touchpad toggle key
+
+There is another keycode that some Dell machines that are about to ship,
+or shipping are using for touchpad toggle. That code is 0x9E.
+
+Signed-off-by: Jerone Young <jerone.young@canonical.com>
+Signed-off-by: Martin Pitt <martin.pitt@ubuntu.com>
+---
+ extras/keymap/keymaps/dell |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/extras/keymap/keymaps/dell b/extras/keymap/keymaps/dell
+index 6443b4b..1a2e433 100644
+--- a/extras/keymap/keymaps/dell
++++ b/extras/keymap/keymaps/dell
+@@ -21,6 +21,7 @@
+ 0x99 nextsong # Front panel next song
+ 0x9A setup # Tablet tools button
+ 0x9B switchvideomode # Display Toggle button
++0x9E f22 #touchpad toggle
+ 0xA2 playpause # Front panel play/pause
+ 0xA4 stopcd # Front panel stop
+ 0xED media # MediaDirect button
+-- 
+1.7.3.2
+

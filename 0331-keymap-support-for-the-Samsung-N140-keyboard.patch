@@ -1,0 +1,24 @@
+From fc8e4dd9329f145442fb61035db4730c5c874d94 Mon Sep 17 00:00:00 2001
+From: Marco d'Itri <md@linux.it>
+Date: Tue, 19 Jan 2010 10:43:06 +0100
+Subject: [PATCH] keymap: support for the Samsung N140 keyboard
+
+---
+ extras/keymap/95-keyboard-force-release.rules |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/extras/keymap/95-keyboard-force-release.rules b/extras/keymap/95-keyboard-force-release.rules
+index 25bced6..689afe9 100644
+--- a/extras/keymap/95-keyboard-force-release.rules
++++ b/extras/keymap/95-keyboard-force-release.rules
+@@ -19,6 +19,6 @@ DRIVER!="atkbd", GOTO="force_release_end"
+ ENV{DMI_VENDOR}="$attr{[dmi/id]sys_vendor}"
+ 
+ 
+-ENV{DMI_VENDOR}=="[sS][aA][mM][sS][uU][nN][gG]*", ATTR{[dmi/id]product_name}=="*N130*|*SR70S/SR71S*", RUN+="keyboard-force-release.sh $devpath samsung-other"
++ENV{DMI_VENDOR}=="[sS][aA][mM][sS][uU][nN][gG]*", ATTR{[dmi/id]product_name}=="*N130*|*N140*|*SR70S/SR71S*", RUN+="keyboard-force-release.sh $devpath samsung-other"
+ 
+ LABEL="force_release_end"
+-- 
+1.7.3.2
+

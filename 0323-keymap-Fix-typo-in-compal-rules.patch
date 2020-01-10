@@ -1,0 +1,26 @@
+From fd3401a641f7b47ef7b5d4ae0d99a555889fed37 Mon Sep 17 00:00:00 2001
+From: Daniel Drake <dsd@laptop.org>
+Date: Thu, 24 Dec 2009 12:46:09 +0000
+Subject: [PATCH] keymap: Fix typo in compal rules
+
+Signed-off-by: Martin Pitt <martin.pitt@ubuntu.com>
+---
+ extras/keymap/95-keymap.rules |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/extras/keymap/95-keymap.rules b/extras/keymap/95-keymap.rules
+index 6da6b26..a98055d 100644
+--- a/extras/keymap/95-keymap.rules
++++ b/extras/keymap/95-keymap.rules
+@@ -112,7 +112,7 @@ ENV{DMI_VENDOR}=="Zepto", ATTR{[dmi/id]product_name}=="Znote", ATTR{[dmi/id]prod
+ 
+ ENV{DMI_VENDOR}=="Everex", ATTR{[dmi/id]product_name}=="XT5000*", RUN+="keymap $name everex-xt5000"
+ 
+-ENV{DMI_COMPAL}=="COMPAL", ATTR{[dmi/id]product_name}=="HEL80I", RUN+="keymap $name 0x84 wlan"
++ENV{DMI_VENDOR}=="COMPAL", ATTR{[dmi/id]product_name}=="HEL80I", RUN+="keymap $name 0x84 wlan"
+ 
+ ENV{DMI_VENDOR}=="OLPC", ATTR{[dmi/id]product_name}=="XO", RUN+="keymap $name olpc-xo"
+ 
+-- 
+1.7.3.2
+

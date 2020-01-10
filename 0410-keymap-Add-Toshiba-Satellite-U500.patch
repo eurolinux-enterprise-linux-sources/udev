@@ -1,0 +1,26 @@
+From a74beafdcc05595cc0c07f75f51fe74057a61f28 Mon Sep 17 00:00:00 2001
+From: Martin Pitt <martin.pitt@ubuntu.com>
+Date: Fri, 22 Oct 2010 12:52:45 +0200
+Subject: [PATCH] keymap: Add Toshiba Satellite U500
+
+https://launchpad.net/bugs/271706
+---
+ extras/keymap/95-keyboard-force-release.rules |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/extras/keymap/95-keyboard-force-release.rules b/extras/keymap/95-keyboard-force-release.rules
+index befce3c..562dc8d 100644
+--- a/extras/keymap/95-keyboard-force-release.rules
++++ b/extras/keymap/95-keyboard-force-release.rules
+@@ -31,7 +31,7 @@ ENV{DMI_VENDOR}=="MTC", ATTR{[dmi/id]product_version}=="A0", RUN+="keyboard-forc
+ 
+ ENV{DMI_VENDOR}=="PEGATRON CORP.", ATTR{[dmi/id]product_name}=="Spring Peak", RUN+="keyboard-force-release.sh $devpath common-volume-keys"
+ 
+-ENV{DMI_VENDOR}=="TOSHIBA", ATTR{[dmi/id]product_name}=="Satellite U300|Satellite Pro U300|Satellite U305", RUN+="keyboard-force-release.sh $devpath common-volume-keys"
++ENV{DMI_VENDOR}=="TOSHIBA", ATTR{[dmi/id]product_name}=="Satellite U300|Satellite Pro U300|Satellite U305|SATELLITE U500", RUN+="keyboard-force-release.sh $devpath common-volume-keys"
+ 
+ ENV{DMI_VENDOR}=="Viooo Corporation", ATTR{[dmi/id]product_name}=="PT17", RUN+="keyboard-force-release.sh $devpath common-volume-keys"
+ 
+-- 
+1.7.3.2
+

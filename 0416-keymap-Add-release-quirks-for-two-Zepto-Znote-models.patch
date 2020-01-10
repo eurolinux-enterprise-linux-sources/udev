@@ -1,0 +1,35 @@
+From 046d09f3221fc20fe92bb58805d6655ced79e060 Mon Sep 17 00:00:00 2001
+From: Andy Whitcroft <apw@canonical.com>
+Date: Fri, 26 Nov 2010 14:08:28 +0100
+Subject: [PATCH] keymap: Add release quirks for two Zepto Znote models and AMILO Xi 2428
+
+Signed-off-by: Martin Pitt <martin.pitt@ubuntu.com>
+---
+ extras/keymap/95-keyboard-force-release.rules |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
+
+diff --git a/extras/keymap/95-keyboard-force-release.rules b/extras/keymap/95-keyboard-force-release.rules
+index 6f7c0fd..84489f4 100644
+--- a/extras/keymap/95-keyboard-force-release.rules
++++ b/extras/keymap/95-keyboard-force-release.rules
+@@ -23,7 +23,7 @@ ENV{DMI_VENDOR}=="[sS][aA][mM][sS][uU][nN][gG]*", RUN+="keyboard-force-release.s
+ 
+ ENV{DMI_VENDOR}=="Dell Inc.", ATTR{[dmi/id]product_name}=="Studio 1557|Studio 1558", RUN+="keyboard-force-release.sh $devpath common-volume-keys"
+ 
+-ENV{DMI_VENDOR}=="FUJITSU SIEMENS", ATTR{[dmi/id]product_name}=="AMILO Si 1848+u", RUN+="keyboard-force-release.sh $devpath common-volume-keys"
++ENV{DMI_VENDOR}=="FUJITSU SIEMENS", ATTR{[dmi/id]product_name}=="AMILO Si 1848+u|AMILO Xi 2428", RUN+="keyboard-force-release.sh $devpath common-volume-keys"
+ 
+ ENV{DMI_VENDOR}=="FOXCONN", ATTR{[dmi/id]product_name}=="QBOOK", RUN+="keyboard-force-release.sh $devpath common-volume-keys"
+ 
+@@ -40,4 +40,8 @@ ENV{DMI_VENDOR}=="Hewlett-Packard*", ATTR{[dmi/id]product_name}=="*[pP][aA][vV][
+ ENV{DMI_VENDOR}=="Hewlett-Packard*", ATTR{[dmi/id]product_name}=="*[tT][xX]2*", RUN+="keyboard-force-release.sh $devpath hp-other"
+ ENV{DMI_VENDOR}=="Hewlett-Packard*", ATTR{[dmi/id]product_name}=="*2510p*|*2530p*|HP G60 Notebook PC", RUN+="keyboard-force-release.sh $devpath hp-other"
+ 
++ENV{DMI_VENDOR}=="Zepto", ATTR{[dmi/id]product_name}=="Znote 6615WD", RUN+="keyboard-force-release.sh $devpath common-volume-keys"
++
++ENV{DMI_VENDOR}=="Zepto", ATTR{[dmi/id]product_name}=="Znote", ATTR{[dmi/id]product_version}=="6625WD", RUN+="keyboard-force-release.sh $devpath common-volume-keys"
++
+ LABEL="force_release_end"
+-- 
+1.7.3.2
+

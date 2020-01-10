@@ -1,0 +1,57 @@
+--- udev-147.old/extras/scsi_id/scsi_id.8	2013-01-09 15:02:51.000000000 +0100
++++ udev-147/extras/scsi_id/scsi_id.8	2014-04-28 10:20:40.321925066 +0200
+@@ -52,27 +52,27 @@
+ 
+ .SH OPTIONS
+ .TP
+-.BI \-\-blacklisted
++\fB-b\fR, \fB\-\-blacklisted\fR
+ The default behaviour \- treat the device as black listed, and do nothing
+ unless a white listed device is found in the scsi_id config\-file.
+ .TP
+-.BI \-\-device=\| device\^
++\fB\-d\fR, \fB\-\-device=\fIdevice\fR
+ Send SG_IO commands to \fBdevice\fP, such as \fB/dev/sdc\fP.
+ .TP
+-.BI \-\-config=\| config\-file
++\fB\-f\fR, \fB\-\-config=\fIconfig\-file\fR
+ Read configuration and black/white list entries from
+-.B config\-file 
++.B config\-file
+ rather than the default
+ .B /etc/scsi_id.config
+ file.
+ .TP
+-.BI \-\-whitelisted
++\fB-g\fR, \fB\-\-whitelisted\fR
+ Treat the device as white listed. The \fB\-\-whitelisted\fP option must be specified
+ on the command line or in the scsi_id configuration file for 
+ .B scsi_id
+ to generate any output.
+ .TP
+-.BI \-\-page=\| 0x80 | 0x83 | pre-spc3-83 | 0x80-0x83 | 0x83-0x80
++\fB-p\fR, \fB\-\-page=\fI0x80 | 0x83 | pre-spc3-83 | 0x80-0x83 | 0x83-0x80\fR
+ Use SCSI INQUIRY VPD page code 0x80, 0x83, or pre-spc3-83.
+ .sp
+ The default
+@@ -90,16 +90,16 @@
+ 0x83-0x80 is like 0x83, and exports ID_SERIAL and ID_SERIAL_83, but also exports 0x80 in ID_SERIAL_80.
+ .sp
+ .TP
+-.BI \-\-replace-whitespace
++\fB-u\fR, \fB\-\-replace-whitespace\fR
+ Reformat the output : replace all whitespaces by underscores.
+ .TP
+-.BI \-\-export
++\fB-x\fR, \fB\-\-export\fR
+ Export all data in KEY=<value> format used to import in other programs.
+ .TP
+-.BI \-\-verbose
++\fB-v\fR, \fB\-\-verbose\fR
+ Generate verbose debugging output.
+ .TP
+-.BI \-\-version
++\fB-V\fR, \fB\-\-version\fR
+ Display version number and exit.
+ .RE
+ 

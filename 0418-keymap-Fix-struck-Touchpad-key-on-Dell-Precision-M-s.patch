@@ -1,0 +1,26 @@
+From 329239f506df62df931a063a752dbbb4da0ebb5c Mon Sep 17 00:00:00 2001
+From: Martin Pitt <martin.pitt@ubuntu.com>
+Date: Wed, 8 Dec 2010 18:41:42 +0100
+Subject: [PATCH] keymap: Fix struck Touchpad key on Dell Precision M series
+
+https://launchpad.net/bugs/686662
+---
+ extras/keymap/95-keyboard-force-release.rules |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/extras/keymap/95-keyboard-force-release.rules b/extras/keymap/95-keyboard-force-release.rules
+index ff2d8fc..8d5f83a 100644
+--- a/extras/keymap/95-keyboard-force-release.rules
++++ b/extras/keymap/95-keyboard-force-release.rules
+@@ -21,7 +21,7 @@ ENV{DMI_VENDOR}="$attr{[dmi/id]sys_vendor}"
+ ENV{DMI_VENDOR}=="[sS][aA][mM][sS][uU][nN][gG]*", RUN+="keyboard-force-release.sh $devpath samsung-other"
+ 
+ ENV{DMI_VENDOR}=="Dell Inc.", ATTR{[dmi/id]product_name}=="Studio 1557|Studio 1558", RUN+="keyboard-force-release.sh $devpath common-volume-keys"
+-ENV{DMI_VENDOR}=="Dell Inc.", ATTR{[dmi/id]product_name}=="Latitude E*", RUN+="keyboard-force-release.sh $devpath dell-touchpad"
++ENV{DMI_VENDOR}=="Dell Inc.", ATTR{[dmi/id]product_name}=="Latitude E*|Precision M*", RUN+="keyboard-force-release.sh $devpath dell-touchpad"
+ 
+ ENV{DMI_VENDOR}=="FUJITSU SIEMENS", ATTR{[dmi/id]product_name}=="AMILO Si 1848+u|AMILO Xi 2428", RUN+="keyboard-force-release.sh $devpath common-volume-keys"
+ 
+-- 
+1.7.3.2
+

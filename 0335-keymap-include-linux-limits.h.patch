@@ -1,0 +1,24 @@
+From 97411493a3f064b25ad9d3e1df99bf35f484eb3a Mon Sep 17 00:00:00 2001
+From: Kay Sievers <kay.sievers@vrfy.org>
+Date: Mon, 25 Jan 2010 07:37:41 +0100
+Subject: [PATCH] keymap: include linux/limits.h
+
+---
+ extras/keymap/keymap.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/extras/keymap/keymap.c b/extras/keymap/keymap.c
+index b565c33..3f01d19 100644
+--- a/extras/keymap/keymap.c
++++ b/extras/keymap/keymap.c
+@@ -32,6 +32,7 @@
+ #include <fcntl.h>
+ #include <getopt.h>
+ #include <sys/ioctl.h>
++#include <linux/limits.h>
+ #include <linux/input.h>
+ 
+ const struct key* lookup_key (const char *str, unsigned int len);
+-- 
+1.7.3.2
+

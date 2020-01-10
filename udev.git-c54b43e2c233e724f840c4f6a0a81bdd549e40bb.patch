@@ -1,0 +1,36 @@
+From: Kei Tokunaga <tokunaga.keiich@jp.fujitsu.com>
+Date: Tue, 15 Feb 2011 09:59:24 +0000 (+0900)
+Subject: udevadm: enumerate - update prev pointer properly
+X-Git-Tag: 167~42
+X-Git-Url: http://www.infra-tux.org/git/?p=udev.git;a=commitdiff_plain;h=c54b43e2c233e724f840c4f6a0a81bdd549e40bb;hp=f3f70f8d9ef6a901bf1bdff10008d76e72bb6692
+
+udevadm: enumerate - update prev pointer properly
+
+When I tried to boot a system with 256 disks x 4 paths with
+device-mapper, udevadm trigger (--type=devices) that was called
+from start_udev ended up dumping a core due to a segmentation
+fault.
+
+In udev_enumerate_get_list_entry(), if it finds the devices that
+should be delayed, it calls syspath_add().  If realloc() in
+syspath_add() allocates the required memory at a different memory
+address, referring prev->len afterward causes the segmentation
+fault.
+
+Signed-off-by: Kei Tokunaga <tokunaga.keiich@jp.fujitsu.com>
+---
+
+diff --git a/libudev/libudev-enumerate.c b/libudev/libudev-enumerate.c
+index e46bc08..9694797 100644
+--- a/libudev/libudev-enumerate.c
++++ b/libudev/libudev-enumerate.c
+@@ -274,6 +274,9 @@ struct udev_list_entry *udev_enumerate_get_list_entry(struct udev_enumerate *ude
+ 			/* skip to be delayed devices, and add them to the end of the list */
+ 			if (devices_delay_end(udev_enumerate->udev, entry->syspath)) {
+ 				syspath_add(udev_enumerate, entry->syspath);
++				/* need to update prev here for the case realloc() gives
++				   a different address */
++				prev = &udev_enumerate->devices[i];
+ 				continue;
+ 			}
+ 

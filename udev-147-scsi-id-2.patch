@@ -1,0 +1,126 @@
+diff -up udev-147/extras/scsi_id/scsi_id.8.id2 udev-147/extras/scsi_id/scsi_id.8
+--- udev-147/extras/scsi_id/scsi_id.8.id2	2009-06-28 02:41:05.000000000 +0200
++++ udev-147/extras/scsi_id/scsi_id.8	2011-02-03 10:43:28.000000000 +0100
+@@ -72,7 +72,7 @@ on the command line or in the scsi_id co
+ .B scsi_id
+ to generate any output.
+ .TP
+-.BI \-\-page=\| 0x80 | 0x83 | pre-spc3-83
++.BI \-\-page=\| 0x80 | 0x83 | pre-spc3-83 | 0x80-0x83 | 0x83-0x80
+ Use SCSI INQUIRY VPD page code 0x80, 0x83, or pre-spc3-83.
+ .sp
+ The default
+@@ -84,6 +84,11 @@ are not compliant with the SPC-2 or SPC-
+ option is used for older model 4, 5, and 6 EMC Symmetrix devices, its
+ use with SPC-2 or SPC-3 compliant devices will fallback to the page 83
+ format supported by these devices.
++.sp
++0x80-0x83 is like 0x80, and exports ID_SERIAL and ID_SERIAL_80, but also exports 0x83 in ID_SERIAL_83.
++.sp
++0x83-0x80 is like 0x83, and exports ID_SERIAL and ID_SERIAL_83, but also exports 0x80 in ID_SERIAL_80.
++.sp
+ .TP
+ .BI \-\-replace-whitespace
+ Reformat the output : replace all whitespaces by underscores.
+diff -up udev-147/extras/scsi_id/scsi_id.c.id2 udev-147/extras/scsi_id/scsi_id.c
+--- udev-147/extras/scsi_id/scsi_id.c.id2	2011-02-03 10:43:27.000000000 +0100
++++ udev-147/extras/scsi_id/scsi_id.c	2011-02-03 10:44:32.000000000 +0100
+@@ -391,6 +391,10 @@ static int set_options(struct udev *udev
+ 				default_page_code = PAGE_80;
+ 			} else if (strcmp(optarg, "0x83") == 0) {
+ 				default_page_code = PAGE_83;
++			} else if (strcmp(optarg, "0x80-0x83") == 0) {
++				default_page_code = PAGE_80_83;
++			} else if (strcmp(optarg, "0x83-0x80") == 0) {
++				default_page_code = PAGE_83_80;
+ 			} else if (strcmp(optarg, "pre-spc3-83") == 0) {
+ 				default_page_code = PAGE_83_PRE_SPC3; 
+ 			} else {
+@@ -473,6 +477,10 @@ static int per_dev_options(struct udev *
+ 				*page_code = PAGE_80;
+ 			} else if (strcmp(optarg, "0x83") == 0) {
+ 				*page_code = PAGE_83;
++			} else if (strcmp(optarg, "0x80-0x83") == 0) {
++				*page_code = PAGE_80_83;
++			} else if (strcmp(optarg, "0x83-0x80") == 0) {
++				*page_code = PAGE_83_80;
+ 			} else if (strcmp(optarg, "pre-spc3-83") == 0) {
+ 				*page_code = PAGE_83_PRE_SPC3; 
+ 			} else {
+@@ -562,10 +570,29 @@ static int scsi_id(struct udev *udev, ch
+ 			udev_util_replace_whitespace(dev_scsi.serial, serial_str, sizeof(serial_str));
+ 			udev_util_replace_chars(serial_str, NULL);
+ 			printf("ID_SERIAL=%s\n", serial_str);
++			if (page_code == PAGE_80_83) {
++				printf("ID_SERIAL_80=%s\n", serial_str);
++			}else if (page_code == PAGE_83_80) {
++				printf("ID_SERIAL_83=%s\n", serial_str);
++			}
+ 			udev_util_replace_whitespace(dev_scsi.serial_short, serial_str, sizeof(serial_str));
+ 			udev_util_replace_chars(serial_str, NULL);
+ 			printf("ID_SERIAL_SHORT=%s\n", serial_str);
+ 		}
++		if (page_code == PAGE_80_83) {
++			if (dev_scsi.serial2[0] != '\0') {
++				udev_util_replace_whitespace(dev_scsi.serial2, serial_str, sizeof(serial_str));
++				udev_util_replace_chars(serial_str, NULL);
++				printf("ID_SERIAL_83=%s\n", serial_str);
++			}
++		}
++		else if (page_code == PAGE_83_80) {
++			if (dev_scsi.serial2[0] != '\0') {
++				udev_util_replace_whitespace(dev_scsi.serial2, serial_str, sizeof(serial_str));
++				udev_util_replace_chars(serial_str, NULL);
++				printf("ID_SERIAL_80=%s\n", serial_str);
++			}
++		}
+ 		if (dev_scsi.wwn[0] != '\0') {
+ 			printf("ID_WWN=0x%s\n", dev_scsi.wwn);
+ 			if (dev_scsi.wwn_vendor_extension[0] != '\0') {
+diff -up udev-147/extras/scsi_id/scsi_id.h.id2 udev-147/extras/scsi_id/scsi_id.h
+--- udev-147/extras/scsi_id/scsi_id.h.id2	2011-02-03 10:43:27.000000000 +0100
++++ udev-147/extras/scsi_id/scsi_id.h	2011-02-03 10:43:28.000000000 +0100
+@@ -38,6 +38,7 @@ struct scsi_id_device {
+ 	char type[33];
+ 	char kernel[64];
+ 	char serial[MAX_SERIAL_LEN];
++	char serial2[MAX_SERIAL_LEN];
+ 	char serial_short[MAX_SERIAL_LEN];
+ 	int use_sg;
+ 
+@@ -63,5 +64,7 @@ enum page_code {
+ 		PAGE_UNSPECIFIED = 0x00,
+ 		PAGE_80		 = 0x80,
+ 		PAGE_83		 = 0x83,
++		PAGE_80_83	 = 0xFD,
++		PAGE_83_80	 = 0xFE,
+ };
+ 
+diff -up udev-147/extras/scsi_id/scsi_serial.c.id2 udev-147/extras/scsi_id/scsi_serial.c
+--- udev-147/extras/scsi_id/scsi_serial.c.id2	2011-02-03 10:43:27.000000000 +0100
++++ udev-147/extras/scsi_id/scsi_serial.c	2011-02-03 10:43:28.000000000 +0100
+@@ -899,6 +899,24 @@ int scsi_get_serial(struct udev *udev,
+ 			retval = 0;
+ 			goto completed;
+ 		}
++	} else if (page_code == PAGE_80_83) {
++		do_scsi_page83_inquiry(udev, dev_scsi, fd, dev_scsi->serial2, dev_scsi->serial_short, len, dev_scsi->unit_serial_number, dev_scsi->wwn, dev_scsi->wwn_vendor_extension);
++		if (do_scsi_page80_inquiry(udev, dev_scsi, fd, dev_scsi->serial, dev_scsi->serial_short, len)) {
++			retval = 1;
++			goto completed;
++		} else  {
++			retval = 0;
++			goto completed;
++		}
++	} else if (page_code == PAGE_83_80) {
++		do_scsi_page80_inquiry(udev, dev_scsi, fd, dev_scsi->serial2, dev_scsi->serial_short, len);
++		if (do_scsi_page83_inquiry(udev, dev_scsi, fd, dev_scsi->serial, dev_scsi->serial_short, len, dev_scsi->unit_serial_number, dev_scsi->wwn, dev_scsi->wwn_vendor_extension)) {
++			retval = 1;
++			goto completed;
++		} else  {
++			retval = 0;
++			goto completed;
++		}
+ 	} else if (page_code == PAGE_83_PRE_SPC3) {
+ 		retval = do_scsi_page83_prespc3_inquiry(udev, dev_scsi, fd, dev_scsi->serial, dev_scsi->serial_short, len);
+ 		if (retval) {

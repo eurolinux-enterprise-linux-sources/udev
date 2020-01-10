@@ -1,0 +1,12 @@
+diff -up udev-147/libudev/libudev-device.c.dummy udev-147/libudev/libudev-device.c
+--- udev-147/libudev/libudev-device.c.dummy	2012-06-07 11:51:44.056839141 +0200
++++ udev-147/libudev/libudev-device.c	2012-06-07 11:52:05.349783114 +0200
+@@ -23,6 +23,8 @@
+ #include "libudev.h"
+ #include "libudev-private.h"
+ 
++int __dummy[]={1,2,3};
++
+ /**
+  * SECTION:libudev-device
+  * @short_description: kernel sys devices

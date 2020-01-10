@@ -1,0 +1,28 @@
+From d17c065e28fa4baac90b02b4913c7ef32d54f3c7 Mon Sep 17 00:00:00 2001
+From: Martin Pitt <martin.pitt@ubuntu.com>
+Date: Fri, 27 Aug 2010 18:48:53 +0200
+Subject: [PATCH] keymap: Fix Acer TravelMate 4720
+
+The previous change just fixed the Bluetooth key, but Screen Lock and Browser
+also need to be changed.
+
+https://launchpad.net/bugs/569815
+---
+ extras/keymap/95-keymap.rules |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/extras/keymap/95-keymap.rules b/extras/keymap/95-keymap.rules
+index cb066bd..913b380 100644
+--- a/extras/keymap/95-keymap.rules
++++ b/extras/keymap/95-keymap.rules
+@@ -85,6 +85,7 @@ ENV{DMI_VENDOR}=="Acer*", RUN+="keymap $name acer"
+ ENV{DMI_VENDOR}=="Acer*", ATTR{[dmi/id]product_name}=="Extensa*", ATTR{[dmi/id]product_name}=="*5210*|*5220*|*5610*|*5620*|*5720*", RUN+="keymap $name 0xEE screenlock"
+ ENV{DMI_VENDOR}=="Acer*", ATTR{[dmi/id]product_name}=="TravelMate*C300*", RUN+="keymap $name acer-travelmate_c300"
+ ENV{DMI_VENDOR}=="Acer*", ATTR{[dmi/id]product_name}=="TravelMate*6292*|TravelMate*8471*|TravelMate*4720*|Aspire 1810T*|AO751h|AO531h", RUN+="keymap $name 0xD9 bluetooth"
++ENV{DMI_VENDOR}=="Acer*", ATTR{[dmi/id]product_name}=="TravelMate*4720*", RUN+="keymap $name 0xB2 www 0xEE screenlock"
+ ENV{DMI_VENDOR}=="Acer*", ATTR{[dmi/id]product_name}=="TravelMate 6593|Aspire 1640", RUN+="keymap $name 0xB2 www 0xEE screenlock"
+ ENV{DMI_VENDOR}=="Acer*", ATTR{[dmi/id]product_name}=="Aspire 6920", RUN+="keymap $name acer-aspire_6920"
+ ENV{DMI_VENDOR}=="Acer*", ATTR{[dmi/id]product_name}=="Aspire 5920G", RUN+="keymap $name acer-aspire_5920g"
+-- 
+1.7.3.2
+

@@ -1,0 +1,25 @@
+diff -up udev-147/extras/scsi_id/scsi_serial.c.original udev-147/extras/scsi_id/scsi_serial.c
+--- udev-147/extras/scsi_id/scsi_serial.c.original	2013-03-12 18:34:56.241646335 +0900
++++ udev-147/extras/scsi_id/scsi_serial.c	2013-03-12 18:35:52.110522830 +0900
+@@ -818,9 +818,20 @@ int scsi_std_inquiry(struct udev *udev,
+ 	unsigned char buf[SCSI_INQ_BUFF_LEN];
+ 	struct stat statbuf;
+ 	int err = 0;
++	int cnt = 10;
+ 
+ 	dbg(udev, "opening %s\n", devname);
+-	fd = open(devname, O_RDONLY | O_NONBLOCK);
++	while (--cnt) {
++		const struct timespec duration = { 0, 500 * 1000 * 1000 };
++
++		fd = open(devname, O_RDONLY | O_NONBLOCK);
++		if (fd >= 0)
++			break;
++		info(udev, "scsi_id: cannot open %s: %s\n", devname, strerror(errno));
++		if (errno != EBUSY)
++			break;
++		nanosleep(&duration, NULL);
++	}
+ 	if (fd < 0) {
+ 		info(udev, "scsi_id: cannot open %s: %s\n",
+ 		     devname, strerror(errno));

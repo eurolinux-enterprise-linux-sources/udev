@@ -1,0 +1,26 @@
+From 386aa6ebd810fb87718972e298c71184b73bd210 Mon Sep 17 00:00:00 2001
+From: Martin Pitt <martin.pitt@ubuntu.com>
+Date: Thu, 21 Jan 2010 01:09:16 +0100
+Subject: [PATCH] extras/keymap/check-keymaps.sh: Ignore comment-only lines
+
+---
+ extras/keymap/check-keymaps.sh |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/extras/keymap/check-keymaps.sh b/extras/keymap/check-keymaps.sh
+index 892fcfd..c92246a 100755
+--- a/extras/keymap/check-keymaps.sh
++++ b/extras/keymap/check-keymaps.sh
+@@ -13,7 +13,8 @@ RULES=$SRCDIR/extras/keymap/95-keymap.rules
+     exit 1
+ }
+ 
+-missing=$(join -v 2 <(awk '{print tolower(substr($1,5))}' $KEYLIST | sort -u) <(awk '{print $2}' ${KEYMAPS_DIR}/*|sort -u))
++missing=$(join -v 2 <(awk '{print tolower(substr($1,5))}' $KEYLIST | sort -u) \
++                    <(grep -hv '^#' ${KEYMAPS_DIR}/*| awk '{print $2}' | sort -u))
+ [ -z "$missing" ] || {
+     echo "ERROR: unknown key names in extras/keymap/keymaps/*:" >&2
+     echo "$missing" >&2
+-- 
+1.7.3.2
+

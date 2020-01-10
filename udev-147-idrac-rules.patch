@@ -1,0 +1,8 @@
+diff -up udev-147/rules/packages/73-idrac.rules.idrac udev-147/rules/packages/73-idrac.rules
+--- udev-147/rules/packages/73-idrac.rules.idrac	2014-06-06 15:05:43.766653166 +0200
++++ udev-147/rules/packages/73-idrac.rules	2014-06-06 15:05:16.527652517 +0200
+@@ -0,0 +1,4 @@
++# On Dell PowerEdge systems, the iDRAC7 and later support a USB Virtual NIC
++#   with terminates in the iDRAC. Help identify this with 'idrac'
++
++ACTION=="add", SUBSYSTEM=="net", SUBSYSTEMS=="usb", ATTRS{idVendor}=="413c", ATTRS{idProduct}=="a102", NAME="idrac"

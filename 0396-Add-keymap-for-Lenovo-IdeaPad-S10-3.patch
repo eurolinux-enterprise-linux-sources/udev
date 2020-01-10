@@ -1,0 +1,56 @@
+From 9cd075e35b8f660c75b0d72d4bea496fd6459f29 Mon Sep 17 00:00:00 2001
+From: David Woodhouse <dwmw2@infradead.org>
+Date: Thu, 12 Aug 2010 17:04:55 +0100
+Subject: [PATCH] Add keymap for Lenovo IdeaPad S10-3
+
+Tested on S10-3, but presumably applicable to all IdeaPads.
+
+Signed-off-by: Martin Pitt <martin.pitt@ubuntu.com>
+---
+ Makefile.am                          |    1 +
+ extras/keymap/95-keymap.rules        |    2 ++
+ extras/keymap/keymaps/lenovo-ideapad |    7 +++++++
+ 3 files changed, 10 insertions(+), 0 deletions(-)
+ create mode 100644 extras/keymap/keymaps/lenovo-ideapad
+
+diff --git a/Makefile.am b/Makefile.am
+index c16b259..77df6ab 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -537,6 +537,7 @@ dist_udevkeymap_DATA = \
+ 	extras/keymap/keymaps/ibm-thinkpad-usb-keyboard-trackpoint \
+ 	extras/keymap/keymaps/inventec-symphony_6.0_7.0 \
+ 	extras/keymap/keymaps/lenovo-3000 \
++	extras/keymap/keymaps/lenovo-ideapad \
+ 	extras/keymap/keymaps/lenovo-thinkpad-usb-keyboard-trackpoint \
+ 	extras/keymap/keymaps/lenovo-thinkpad_x6_tablet \
+ 	extras/keymap/keymaps/lenovo-thinkpad_x200_tablet \
+diff --git a/extras/keymap/95-keymap.rules b/extras/keymap/95-keymap.rules
+index 13b5571..2241422 100644
+--- a/extras/keymap/95-keymap.rules
++++ b/extras/keymap/95-keymap.rules
+@@ -65,6 +65,8 @@ ENV{DMI_VENDOR}=="Compaq*", ATTR{[dmi/id]product_name}=="*E500*|*Evo N*", RUN+="
+ ENV{DMI_VENDOR}=="LENOVO*", ATTR{[dmi/id]product_version}=="*3000*", RUN+="keymap $name lenovo-3000"
+ ENV{DMI_VENDOR}=="LENOVO*", ATTR{[dmi/id]product_version}=="ThinkPad X6*", ATTR{[dmi/id]product_version}=="* Tablet" RUN+="keymap $name lenovo-thinkpad_x6_tablet"
+ ENV{DMI_VENDOR}=="LENOVO*", ATTR{[dmi/id]product_version}=="ThinkPad X200 Tablet*", ATTR{[dmi/id]product_version}=="* Tablet" RUN+="keymap $name lenovo-thinkpad_x200_tablet"
++ENV{DMI_VENDOR}=="LENOVO*", ATTR{[dmi/id]product_version}=="*IdeaPad*", RUN+="keymap $name lenovo-ideapad"
++ENV{DMI_VENDOR}=="LENOVO*", ATTR{[dmi/id]product_name}=="S10-*", RUN+="keymap $name lenovo-ideapad"
+ 
+ ENV{DMI_VENDOR}=="Hewlett-Packard*", RUN+="keymap $name hewlett-packard"
+ ENV{DMI_VENDOR}=="Hewlett-Packard*", ATTR{[dmi/id]product_name}=="*[tT][aA][bB][lL][eE][tT]*", RUN+="keymap $name hewlett-packard-tablet"
+diff --git a/extras/keymap/keymaps/lenovo-ideapad b/extras/keymap/keymaps/lenovo-ideapad
+new file mode 100644
+index 0000000..d5f2567
+--- /dev/null
++++ b/extras/keymap/keymaps/lenovo-ideapad
+@@ -0,0 +1,7 @@
++# Key codes observed on S10-3, assumed valid on other IdeaPad models
++0x81 rfkill			# does nothing in BIOS
++0x83 display_off		# BIOS toggles screen state
++0xB9 brightnessup		# does nothing in BIOS
++0xBA brightnessdown		# does nothing in BIOS
++0xF1 camera			# BIOS toggles camera power
++0xf2 unknown			# trackpad enable/disable (does nothing in BIOS)
+-- 
+1.7.3.2
+

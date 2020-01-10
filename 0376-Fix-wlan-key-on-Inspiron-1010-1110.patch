@@ -1,0 +1,41 @@
+From ca3fe48dc322af223c2b6e68c8818739d0121198 Mon Sep 17 00:00:00 2001
+From: Jerone Young <jerone.young@canonical.com>
+Date: Wed, 2 Jun 2010 01:27:31 -0500
+Subject: [PATCH] Fix wlan key on Inspiron 1010 & 1110
+
+This fixes wlan key on Inspirion 1010 & 1110.
+
+This patch depends on previous patches sent.
+
+The issue with all of these is that they were all Dell mini & it wasn't
+noticed till recent that they all did not follow the standard that the
+rest of Dell machines follow.
+
+Also to note while this fixes the wlan key sending the proper key press,
+work is still needed at the kernel level for complete support.
+
+This is the last patch all the Dell minis have been verified to all have
+this issue, and are now covered.
+
+Signed-off-by: Jerone Young <jerone.young@canonical.com>
+Signed-off-by: Martin Pitt <martin.pitt@ubuntu.com>
+---
+ extras/keymap/95-keymap.rules |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/extras/keymap/95-keymap.rules b/extras/keymap/95-keymap.rules
+index 79490da..8ed2b59 100644
+--- a/extras/keymap/95-keymap.rules
++++ b/extras/keymap/95-keymap.rules
+@@ -53,7 +53,7 @@ GOTO="keyboard_end"
+ LABEL="keyboard_vendorcheck"
+ 
+ ENV{DMI_VENDOR}=="Dell*", RUN+="keymap $name dell"
+-ENV{DMI_VENDOR}=="Dell*", ATTR{[dmi/id]product_name}=="Inspiron 910|Inspiron 1011|Inspiron 1210", RUN+="keymap $name 0x84 wlan"
++ENV{DMI_VENDOR}=="Dell*", ATTR{[dmi/id]product_name}=="Inspiron 910|Inspiron 1010|Inspiron 1011|Inspiron 1012|Inspiron 1110|Inspiron 1210", RUN+="keymap $name 0x84 wlan"
+ 
+ ENV{DMI_VENDOR}=="Compaq*", ATTR{[dmi/id]product_name}=="*E500*|*Evo N*", RUN+="keymap $name compaq-e_evo"
+ 
+-- 
+1.7.3.2
+

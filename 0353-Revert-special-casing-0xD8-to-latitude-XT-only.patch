@@ -1,0 +1,42 @@
+From 5fa8992c9c2e756aefe84a41f00c7a2555e8d975 Mon Sep 17 00:00:00 2001
+From: Jerone Young <jerone.young@canonical.com>
+Date: Mon, 5 Apr 2010 18:45:35 -0500
+Subject: [PATCH] Revert special casing 0xD8 to latitude XT only
+
+Now that Dell has changed the functionality of upcoming machines with
+touchpad toggle to only use keycode 0xD9 .. and not 0xD8 & 0xD9. It
+seems best to add this back to the general map of Dell buttons. Just
+incase a machine in the future uses this later.
+
+Signed-off-by: Jerone Young <jerone.young@canonical.com>
+Signed-off-by: Martin Pitt <martin.pitt@ubuntu.com>
+---
+ extras/keymap/95-keymap.rules |    1 -
+ extras/keymap/keymaps/dell    |    1 +
+ 2 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/extras/keymap/95-keymap.rules b/extras/keymap/95-keymap.rules
+index af39c21..dd58453 100644
+--- a/extras/keymap/95-keymap.rules
++++ b/extras/keymap/95-keymap.rules
+@@ -54,7 +54,6 @@ LABEL="keyboard_vendorcheck"
+ 
+ ENV{DMI_VENDOR}=="Dell*", RUN+="keymap $name dell"
+ ENV{DMI_VENDOR}=="Dell*", ATTR{[dmi/id]product_name}=="Inspiron 1011", RUN+="keymap $name 0x84 wlan"
+-ENV{DMI_VENDOR}=="Dell*", ATTR{[dmi/id]product_name}=="Latitude XT*", RUN+="keymap $name 0xD8 screenlock"
+ 
+ ENV{DMI_VENDOR}=="Compaq*", ATTR{[dmi/id]product_name}=="*E500*|*Evo N*", RUN+="keymap $name compaq-e_evo"
+ 
+diff --git a/extras/keymap/keymaps/dell b/extras/keymap/keymaps/dell
+index f90a4fd..6443b4b 100644
+--- a/extras/keymap/keymaps/dell
++++ b/extras/keymap/keymaps/dell
+@@ -24,4 +24,5 @@
+ 0xA2 playpause # Front panel play/pause
+ 0xA4 stopcd # Front panel stop
+ 0xED media # MediaDirect button
++0xD8 screenlock # FIXME: Tablet lock button
+ 0xD9 f22 # touchpad toggle
+-- 
+1.7.3.2
+

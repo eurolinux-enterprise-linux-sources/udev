@@ -1,0 +1,107 @@
+From bf088a572eda0eb95de1e0d08a68c9280ada2a10 Mon Sep 17 00:00:00 2001
+From: Daniel Drake <dsd@laptop.org>
+Date: Thu, 24 Dec 2009 12:43:46 +0000
+Subject: [PATCH] keymap: Add OLPC XO key mappings
+
+This supports both XO-1 and XO-1.5.
+
+Signed-off-by: Martin Pitt <martin.pitt@ubuntu.com>
+---
+ Makefile.am                   |    1 +
+ extras/keymap/95-keymap.rules |    2 +
+ extras/keymap/keymaps/olpc-xo |   60 +++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 63 insertions(+), 0 deletions(-)
+ create mode 100644 extras/keymap/keymaps/olpc-xo
+
+diff --git a/Makefile.am b/Makefile.am
+index e037e60..0d2e1b6 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -532,6 +532,7 @@ dist_udevkeymap_DATA = \
+ 	extras/keymap/keymaps/module-lenovo \
+ 	extras/keymap/keymaps/module-sony \
+ 	extras/keymap/keymaps/module-sony-old \
++	extras/keymap/keymaps/olpc-xo \
+ 	extras/keymap/keymaps/oqo-model2 \
+ 	extras/keymap/keymaps/samsung-other \
+ 	extras/keymap/keymaps/samsung-sq1us \
+diff --git a/extras/keymap/95-keymap.rules b/extras/keymap/95-keymap.rules
+index 8db47f8..6da6b26 100644
+--- a/extras/keymap/95-keymap.rules
++++ b/extras/keymap/95-keymap.rules
+@@ -114,4 +114,6 @@ ENV{DMI_VENDOR}=="Everex", ATTR{[dmi/id]product_name}=="XT5000*", RUN+="keymap $
+ 
+ ENV{DMI_COMPAL}=="COMPAL", ATTR{[dmi/id]product_name}=="HEL80I", RUN+="keymap $name 0x84 wlan"
+ 
++ENV{DMI_VENDOR}=="OLPC", ATTR{[dmi/id]product_name}=="XO", RUN+="keymap $name olpc-xo"
++
+ LABEL="keyboard_end"
+diff --git a/extras/keymap/keymaps/olpc-xo b/extras/keymap/keymaps/olpc-xo
+new file mode 100644
+index 0000000..7fe0662
+--- /dev/null
++++ b/extras/keymap/keymaps/olpc-xo
+@@ -0,0 +1,60 @@
++0x59 fn
++0x81 fn_esc
++0xF9 camera
++0xF8 sound # Fn-CAMERA = Mic
++0xBB fn_f1
++0xBC fn_f2
++0xBD fn_f3
++0xBE fn_f4
++0xBF fn_f5
++0xC0 fn_f6
++0xC1 fn_f7
++0xC2 fn_f8
++0xC3 fn_f9
++0xC4 fn_f10
++0xD7 fn_f11
++0xD8 fn_f12
++
++# Using F13-F21 for the .5 F keys right now.
++0xF7 f13
++0xF6 f14
++0xF5 f15
++0xF4 f16
++0xF3 f17
++0xF2 f18
++0xF1 f19
++0xF0 f20
++0xEF f21
++
++0xEE chat
++0xE4 chat # Just mapping Fn-Chat to Chat for now
++0xDD menu # Frame
++0xDA prog1 # Fn-Frame
++
++# The FN of some keys is other keys
++0xD3 delete
++0xD2 insert
++0xC9 pageup
++0xD1 pagedown
++0xC7 home
++0xCF end
++
++# Language key - don't ask what they are doing as KEY_HP
++0x73 hp
++0x7E hp
++
++0xDB leftmeta # left grab
++0xDC rightmeta # right grab
++0x85 rightmeta # Right grab releases on a different scancode
++0xD6 kbdillumtoggle # Fn-space
++0x69 switchvideomode # Brightness key
++
++# Game keys
++0x65 kp8 # up
++0x66 kp2 # down
++0x67 kp4 # left
++0x68 kp6 # right
++0xE5 kp9 # pgup
++0xE6 kp3 # pgdn
++0xE7 kp7 # home
++0xE8 kp1 # end
+-- 
+1.7.3.2
+

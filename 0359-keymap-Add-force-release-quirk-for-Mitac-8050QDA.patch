@@ -1,0 +1,26 @@
+From 23c455b887e039183a1b2d78305df7b9f1cdad73 Mon Sep 17 00:00:00 2001
+From: Kamal Mostafa <kamal@canonical.com>
+Date: Mon, 19 Apr 2010 08:56:45 +0200
+Subject: [PATCH] keymap: Add force-release quirk for Mitac 8050QDA
+
+https://launchpad.net/bugs/374884
+
+Signed-off-by: Martin Pitt <martin.pitt@ubuntu.com>
+---
+ extras/keymap/95-keyboard-force-release.rules |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/extras/keymap/95-keyboard-force-release.rules b/extras/keymap/95-keyboard-force-release.rules
+index 4fd925f..c9edacf 100644
+--- a/extras/keymap/95-keyboard-force-release.rules
++++ b/extras/keymap/95-keyboard-force-release.rules
+@@ -27,4 +27,6 @@ ENV{DMI_VENDOR}=="FUJITSU SIEMENS", ATTR{[dmi/id]product_name}=="AMILO Si 1848+u
+ 
+ ENV{DMI_VENDOR}=="FOXCONN", ATTR{[dmi/id]product_name}=="QBOOK", RUN+="keyboard-force-release.sh $devpath common-volume-keys"
+ 
++ENV{DMI_VENDOR}=="MTC", ATTR{[dmi/id]product_version}=="A0", RUN+="keyboard-force-release.sh $devpath common-volume-keys"
++
+ LABEL="force_release_end"
+-- 
+1.7.3.2
+

@@ -1,0 +1,32 @@
+From e22aa83ba0b09796d02ebe831a4a66ab7d9f5c1e Mon Sep 17 00:00:00 2001
+From: Jerone Young <jerone.young@canonical.com>
+Date: Mon, 5 Apr 2010 18:45:34 -0500
+Subject: [PATCH] Add new Dell touchpad keycode
+
+After working very closely with Dell. They have now completely changed
+the way they have implemented there touchpad hotkey for upcoming
+machines.
+
+It now only generates a single keycode (0xD9). It nolonger does anything
+in hardware, nor does it generate more then this keycode.
+
+This patch properly maps this keycode.
+
+Signed-off-by: Jerone Young <jerone.young@canonical.com>
+Signed-off-by: Martin Pitt <martin.pitt@ubuntu.com>
+---
+ extras/keymap/keymaps/dell |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/extras/keymap/keymaps/dell b/extras/keymap/keymaps/dell
+index 84e5b4e..f90a4fd 100644
+--- a/extras/keymap/keymaps/dell
++++ b/extras/keymap/keymaps/dell
+@@ -24,3 +24,4 @@
+ 0xA2 playpause # Front panel play/pause
+ 0xA4 stopcd # Front panel stop
+ 0xED media # MediaDirect button
++0xD9 f22 # touchpad toggle
+-- 
+1.7.3.2
+

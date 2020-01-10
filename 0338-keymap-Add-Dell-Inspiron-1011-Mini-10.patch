@@ -1,0 +1,26 @@
+From fc47e0b56779ceeaaa40d2dc3248fa002af63aaa Mon Sep 17 00:00:00 2001
+From: Martin Pitt <martin.pitt@ubuntu.com>
+Date: Mon, 1 Feb 2010 15:27:46 -0800
+Subject: [PATCH] keymap: Add Dell Inspiron 1011 (Mini 10)
+
+This fixes the broken WLAN key.
+---
+ extras/keymap/95-keymap.rules |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/extras/keymap/95-keymap.rules b/extras/keymap/95-keymap.rules
+index 2b1c4bd..51c8c3b 100644
+--- a/extras/keymap/95-keymap.rules
++++ b/extras/keymap/95-keymap.rules
+@@ -53,6 +53,8 @@ GOTO="keyboard_end"
+ LABEL="keyboard_vendorcheck"
+ 
+ ENV{DMI_VENDOR}=="Dell*", RUN+="keymap $name dell"
++ENV{DMI_VENDOR}=="Dell*", ATTR{[dmi/id]product_name}=="Inspiron 1011", RUN+="keymap $name 0x84 wlan"
++
+ ENV{DMI_VENDOR}=="Compaq*", ATTR{[dmi/id]product_name}=="*E500*|*Evo N*", RUN+="keymap $name compaq-e_evo"
+ 
+ ENV{DMI_VENDOR}=="LENOVO*", ATTR{[dmi/id]product_version}=="*3000*", RUN+="keymap $name lenovo-3000"
+-- 
+1.7.3.2
+

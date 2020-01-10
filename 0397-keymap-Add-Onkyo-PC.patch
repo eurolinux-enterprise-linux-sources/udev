@@ -1,0 +1,63 @@
+From acf865b68e1a5c78677537b373b6e082c287fc27 Mon Sep 17 00:00:00 2001
+From: Martin Pitt <martin.pitt@ubuntu.com>
+Date: Sun, 22 Aug 2010 11:00:34 +0200
+Subject: [PATCH] keymap: Add Onkyo PC
+
+Thanks to Pau Oliva!
+
+https://launchpad.net/bugs/612529
+---
+ Makefile.am                   |    1 +
+ extras/keymap/95-keymap.rules |    2 ++
+ extras/keymap/keymaps/onkyo   |   14 ++++++++++++++
+ 3 files changed, 17 insertions(+), 0 deletions(-)
+ create mode 100644 extras/keymap/keymaps/onkyo
+
+diff --git a/Makefile.am b/Makefile.am
+index 77df6ab..512de34 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -555,6 +555,7 @@ dist_udevkeymap_DATA = \
+ 	extras/keymap/keymaps/module-sony \
+ 	extras/keymap/keymaps/module-sony-old \
+ 	extras/keymap/keymaps/olpc-xo \
++	extras/keymap/keymaps/onkyo \
+ 	extras/keymap/keymaps/oqo-model2 \
+ 	extras/keymap/keymaps/samsung-other \
+ 	extras/keymap/keymaps/samsung-sq1us \
+diff --git a/extras/keymap/95-keymap.rules b/extras/keymap/95-keymap.rules
+index 2241422..e9d5721 100644
+--- a/extras/keymap/95-keymap.rules
++++ b/extras/keymap/95-keymap.rules
+@@ -127,6 +127,8 @@ ENV{DMI_VENDOR}=="TOSHIBA", ATTR{[dmi/id]product_name}=="Satellite M30X", RUN+="
+ 
+ ENV{DMI_VENDOR}=="OQO Inc.*", ATTR{[dmi/id]product_name}=="OQO Model 2*", RUN+="keymap $name oqo-model2"
+ 
++ENV{DMI_VENDOR}=="ONKYO CORPORATION", ATTR{[dmi/id]product_name}=="ONKYOPC", RUN+="keymap $name onkyo"
++
+ ENV{DMI_VENDOR}=="ASUS", RUN+="keymap $name asus"
+ 
+ ENV{DMI_VENDOR}=="VIA", ATTR{[dmi/id]product_name}=="K8N800", ATTR{[dmi/id]product_version}=="VT8204B", RUN+="keymap $name 0x81 prog1"
+diff --git a/extras/keymap/keymaps/onkyo b/extras/keymap/keymaps/onkyo
+new file mode 100644
+index 0000000..7dd80a1
+--- /dev/null
++++ b/extras/keymap/keymaps/onkyo
+@@ -0,0 +1,14 @@
++0xA0 mute # Fn+D
++0xAE volumedown # Fn+F
++0xB0 volumeup # Fn+G
++0xDF sleep # Fn+W
++0xE0 bluetooth # Fn+H
++0xE2 cyclewindows # Fn+Esc
++0xEE battery # Fn+Q
++0xF0 media # Fn+R
++0xF5 switchvideomode # Fn+E
++0xF6 camera # Fn+T
++0xF7 f22 # Fn+Y (touchpad toggle)
++0xF8 brightnessup # Fn+S
++0xF9 brightnessdown # Fn+A
++0xFB wlan # Fn+J
+-- 
+1.7.3.2
+

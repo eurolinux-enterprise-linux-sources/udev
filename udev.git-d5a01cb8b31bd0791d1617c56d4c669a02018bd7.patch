@@ -1,0 +1,23 @@
+commit d5a01cb8b31bd0791d1617c56d4c669a02018bd7
+Author: Kay Sievers <kay.sievers@vrfy.org>
+Date:   Fri Dec 25 16:14:22 2009 +0100
+
+    udevadm: logging - copy va_list and do not use it twice
+
+diff --git a/udev/udevadm.c b/udev/udevadm.c
+index 00c2350..21b7f61 100644
+--- a/udev/udevadm.c
++++ b/udev/udevadm.c
+@@ -35,7 +35,11 @@ static void log_fn(struct udev *udev, int priority,
+ 		fprintf(stderr, "%s: ", fn);
+ 		vfprintf(stderr, format, args);
+ 	} else {
+-		vfprintf(stderr, format, args);
++		va_list args2;
++
++		va_copy(args2, args);
++		vfprintf(stderr, format, args2);
++		va_end(args2);
+ 		vsyslog(priority, format, args);
+ 	}
+ }

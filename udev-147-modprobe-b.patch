@@ -1,0 +1,15 @@
+diff -up udev-147/rules/redhat/40-redhat.rules.mod-b udev-147/rules/redhat/40-redhat.rules
+--- udev-147/rules/redhat/40-redhat.rules.mod-b	2014-06-18 13:20:02.965356664 +0200
++++ udev-147/rules/redhat/40-redhat.rules	2014-06-18 13:21:08.863353042 +0200
+@@ -14,9 +14,9 @@ SUBSYSTEM=="usb", KERNEL=="sd*", ATTRS{b
+ KERNEL=="fd[0-9]*",		SYMLINK+="floppy floppy-%k"
+ 
+ ACTION=="add", SUBSYSTEM=="scsi_device", ATTRS{type}=="0|7|14", \
+-        RUN+="/sbin/modprobe sd_mod"
++        RUN+="/sbin/modprobe -b sd_mod"
+ ACTION=="add", SUBSYSTEM=="scsi_device", ATTRS{type}=="[45]", \
+-        RUN+="/sbin/modprobe sr_mod"
++        RUN+="/sbin/modprobe -b sr_mod"
+ 
+ KERNEL=="vcs",                 OWNER="vcsa", GROUP="tty"
+ KERNEL=="vcs[0-9]*",           OWNER="vcsa", GROUP="tty"

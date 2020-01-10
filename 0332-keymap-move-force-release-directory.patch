@@ -1,0 +1,64 @@
+From 9a6741ba2f5ef72c051b11484daabd56213742c0 Mon Sep 17 00:00:00 2001
+From: Martin Pitt <martin.pitt@ubuntu.com>
+Date: Thu, 21 Jan 2010 00:55:59 +0100
+Subject: [PATCH] keymap: move force-release directory
+
+Move extras/keymap/keymaps/force-release/ to
+extras/keymap/force-release-maps/, so that check-keymaps.sh does not stumble
+over the directory. It's also a more logical source layout.
+---
+ Makefile.am                                       |    2 +-
+ extras/keymap/force-release-maps/samsung-other    |   10 ++++++++++
+ extras/keymap/keymaps/force-release/samsung-other |   10 ----------
+ 3 files changed, 11 insertions(+), 11 deletions(-)
+ create mode 100644 extras/keymap/force-release-maps/samsung-other
+ delete mode 100644 extras/keymap/keymaps/force-release/samsung-other
+
+diff --git a/Makefile.am b/Makefile.am
+index 322fb43..b7ced1d 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -544,7 +544,7 @@ dist_udevkeymap_DATA = \
+ 
+ udevkeymapforcereldir = $(libexecdir)/keymaps/force-release
+ dist_udevkeymapforcerel_DATA = \
+-	extras/keymap/keymaps/force-release/samsung-other
++	extras/keymap/force-release-maps/samsung-other
+ 
+ extras/keymap/keys.txt: /usr/include/linux/input.h
+ 	mkdir -p extras/keymap
+diff --git a/extras/keymap/force-release-maps/samsung-other b/extras/keymap/force-release-maps/samsung-other
+new file mode 100644
+index 0000000..c51123a
+--- /dev/null
++++ b/extras/keymap/force-release-maps/samsung-other
+@@ -0,0 +1,10 @@
++# list of scancodes (hex or decimal), optional comment
++0x82 # Fn+F4 CRT/LCD
++0x83 # Fn+F2 battery
++0x84 # Fn+F5 backlight on/off
++0x86 # Fn+F9 WLAN
++0x88 # Fn-Up brightness up
++0x89 # Fn-Down brightness down
++0xB3 # Fn+F8 switch power mode (battery/dynamic/performance)
++0xF7 # Fn+F10 Touchpad on
++0xF9 # Fn+F10 Touchpad off
+diff --git a/extras/keymap/keymaps/force-release/samsung-other b/extras/keymap/keymaps/force-release/samsung-other
+deleted file mode 100644
+index c51123a..0000000
+--- a/extras/keymap/keymaps/force-release/samsung-other
++++ /dev/null
+@@ -1,10 +0,0 @@
+-# list of scancodes (hex or decimal), optional comment
+-0x82 # Fn+F4 CRT/LCD
+-0x83 # Fn+F2 battery
+-0x84 # Fn+F5 backlight on/off
+-0x86 # Fn+F9 WLAN
+-0x88 # Fn-Up brightness up
+-0x89 # Fn-Down brightness down
+-0xB3 # Fn+F8 switch power mode (battery/dynamic/performance)
+-0xF7 # Fn+F10 Touchpad on
+-0xF9 # Fn+F10 Touchpad off
+-- 
+1.7.3.2
+

@@ -1,0 +1,27 @@
+From db05f937272d577dac014fa12537798f4981c112 Mon Sep 17 00:00:00 2001
+From: Martin Pitt <martin.pitt@ubuntu.com>
+Date: Wed, 23 Dec 2009 10:38:20 +0100
+Subject: [PATCH] keymap: Add Logitech S510 USB keyboard
+
+The Logitech S510 identifies just like the already existing
+"logitech-wave-cordless" variant, but with wildly different scancodes. So just
+merge the tables, since they won't collide.
+
+https://launchpad.net/bugs/259244
+---
+ extras/keymap/keymaps/logitech-wave-cordless |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/extras/keymap/keymaps/logitech-wave-cordless b/extras/keymap/keymaps/logitech-wave-cordless
+index 4d34c97..a10dad5 100644
+--- a/extras/keymap/keymaps/logitech-wave-cordless
++++ b/extras/keymap/keymaps/logitech-wave-cordless
+@@ -1,3 +1,5 @@
++0xD4 zoomin
++0xCC zoomout
+ 0xC0183 media
+ 0xC1005 camera
+ 0xC101F zoomout
+-- 
+1.7.3.2
+

@@ -1,0 +1,39 @@
+diff -up udev-147/extras/cdrom_id/cdrom_id.c.virt udev-147/extras/cdrom_id/cdrom_id.c
+--- udev-147/extras/cdrom_id/cdrom_id.c.virt	2011-03-30 14:25:06.000000000 +0200
++++ udev-147/extras/cdrom_id/cdrom_id.c	2011-03-30 14:26:28.000000000 +0200
+@@ -419,6 +419,16 @@ static int cd_profiles(struct udev *udev
+ 	if (cur_profile > 0) {
+ 		info(udev, "current profile 0x%02x\n", cur_profile);
+ 	} else {
++		if (cur_profile == 0) {	   
++			if (cd_media == 1) {
++				/* quirk for xen virtual machines */
++				info(udev, "no current profile, but CDS_DISC_OK, assuming incomplete implementation\n");
++				cd_media_track_count_data = 1;
++				cd_media_track_count = 1;
++				cd_media_cd_rom = 1;
++				return 0;
++			}
++		}
+ 		info(udev, "no current profile, assuming no media\n");
+ 		return -1;
+ 	}
+@@ -797,6 +807,9 @@ static int cd_media_toc(struct udev *ude
+ 			cd_media_track_count_audio++;
+ 	}
+ 
++	/* add remaining tracks to data tracks */
++	cd_media_track_count_data += num_tracks;
++
+ 	scsi_cmd_init(udev, &sc, header, sizeof(header));
+ 	scsi_cmd_set(udev, &sc, 0, 0x43);
+ 	scsi_cmd_set(udev, &sc, 2, 1); /* Session Info */
+@@ -905,7 +918,7 @@ int main(int argc, char *argv[])
+ 		goto print;
+ 
+ 	/* read drive and possibly current profile */
+-	if (cd_profiles(udev, fd) < 0)
++	if (cd_profiles(udev, fd) < 0  && cd_media != 1)
+ 		goto print;
+ 
+ 	/* get session/track info */

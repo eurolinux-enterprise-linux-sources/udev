@@ -1,0 +1,28 @@
+From 310f2896eb04b4aa2fe5241f7cf0590852adb2fe Mon Sep 17 00:00:00 2001
+From: Jerone Young <jerone.young@canonical.com>
+Date: Sun, 27 Jun 2010 22:35:44 -0500
+Subject: [PATCH] Fix stuck volume key presses for Toshiba Satellite U300 & U305models
+
+This patch fixes stuck volume keys for Toshiba Satellite models U300 &
+U305.
+
+Signed-off-by: Jerone Young <jerone.young@canonical.com>
+Signed-off-by: Martin Pitt <martin.pitt@ubuntu.com>
+---
+ extras/keymap/95-keyboard-force-release.rules |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/extras/keymap/95-keyboard-force-release.rules b/extras/keymap/95-keyboard-force-release.rules
+index 36d569a..db8a3b3 100644
+--- a/extras/keymap/95-keyboard-force-release.rules
++++ b/extras/keymap/95-keyboard-force-release.rules
+@@ -31,4 +31,6 @@ ENV{DMI_VENDOR}=="MTC", ATTR{[dmi/id]product_version}=="A0", RUN+="keyboard-forc
+ 
+ ENV{DMI_VENDOR}=="PEGATRON CORP.", ATTR{[dmi/id]product_name}=="Spring Peak", RUN+="keyboard-force-release.sh $devpath common-volume-keys"
+ 
++ENV{DMI_VENDOR}=="TOSHIBA", ATTR{[dmi/id]product_name}=="Satellite U300|Satellite Pro U300|Satellite U305", RUN+="keyboard-force-release.sh $devpath common-volume-keys"
++
+ LABEL="force_release_end"
+-- 
+1.7.3.2
+

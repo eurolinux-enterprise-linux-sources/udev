@@ -1,0 +1,24 @@
+From 4422ca361478304ac395eb2ff5a4cab4a7047006 Mon Sep 17 00:00:00 2001
+From: RH udev team <udev-maint@redhat.com>
+Date: Fri, 26 Jul 2013 15:26:16 +0200
+Subject: [PATCH] udev-lock: include missing header
+
+---
+ udev/udev-lock.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/udev/udev-lock.c b/udev/udev-lock.c
+index 0b5b7e9..593645e 100644
+--- a/udev/udev-lock.c
++++ b/udev/udev-lock.c
+@@ -28,6 +28,7 @@
+ #include <sys/ipc.h>
+ #include <sys/shm.h>
+ #include <sys/sem.h>
++#include "udev.h"
+ 
+ static int udev_lock_semid = -1;
+ 
+-- 
+1.8.3.1
+

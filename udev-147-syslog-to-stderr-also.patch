@@ -1,0 +1,25 @@
+From 90a855b34a77d34910e4b864de8963bf39ed58b9 Mon Sep 17 00:00:00 2001
+From: RH udev team <udev-maint@redhat.com>
+Date: Fri, 26 Jul 2013 19:41:34 +0200
+Subject: [PATCH] syslog to stderr also
+
+---
+ libudev/libudev-private.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/libudev/libudev-private.h b/libudev/libudev-private.h
+index c42d978..b2ec7b3 100644
+--- a/libudev/libudev-private.h
++++ b/libudev/libudev-private.h
+@@ -45,7 +45,7 @@ udev_log_null(struct udev *udev, const char *format, ...) {}
+ 
+ static inline void udev_log_init(const char *program_name)
+ {
+-	openlog(program_name, LOG_PID | LOG_CONS, LOG_DAEMON);
++        openlog(program_name, LOG_PID | LOG_CONS | LOG_PERROR, LOG_DAEMON);
+ }
+ 
+ static inline void udev_log_close(void)
+-- 
+1.8.3.1
+

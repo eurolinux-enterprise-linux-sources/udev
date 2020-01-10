@@ -1,0 +1,53 @@
+From da96a11b9c9164447bef206db47c405342ab8daa Mon Sep 17 00:00:00 2001
+From: Andy Whitcroft <apw@canonical.com>
+Date: Tue, 2 Mar 2010 14:00:32 +0100
+Subject: [PATCH] keymap: Add Fujitsu Amilo 1848+u  force-release quirk
+
+The Fujitsu Amilo Si 1848+u laptop requires the volume and mute keys
+quirking.
+
+https://launchpad.net/bugs/530089
+
+Signed-off-by: Martin Pitt <martin.pitt@ubuntu.com>
+---
+ Makefile.am                                        |    1 +
+ extras/keymap/95-keyboard-force-release.rules      |    2 ++
+ .../keymap/force-release-maps/fujitsu-amilo-si1848 |    3 +++
+ 3 files changed, 6 insertions(+), 0 deletions(-)
+ create mode 100644 extras/keymap/force-release-maps/fujitsu-amilo-si1848
+
+diff --git a/Makefile.am b/Makefile.am
+index 3780f50..471c5dd 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -543,6 +543,7 @@ dist_udevkeymap_DATA = \
+ udevkeymapforcereldir = $(libexecdir)/keymaps/force-release
+ dist_udevkeymapforcerel_DATA = \
+ 	extras/keymap/force-release-maps/samsung-other \
++	extras/keymap/force-release-maps/fujitsu-amilo-si1848 \
+ 	extras/keymap/force-release-maps/dell-studio-1557
+ 
+ extras/keymap/keys.txt: $(INCLUDE_PREFIX)/linux/input.h
+diff --git a/extras/keymap/95-keyboard-force-release.rules b/extras/keymap/95-keyboard-force-release.rules
+index 48b896d..28639a5 100644
+--- a/extras/keymap/95-keyboard-force-release.rules
++++ b/extras/keymap/95-keyboard-force-release.rules
+@@ -23,4 +23,6 @@ ENV{DMI_VENDOR}=="[sS][aA][mM][sS][uU][nN][gG]*", ATTR{[dmi/id]product_name}=="*
+ 
+ ENV{DMI_VENDOR}=="Dell Inc.", ATTR{[dmi/id]product_name}=="Studio 1557", RUN+="keyboard-force-release.sh $devpath dell-studio-1557"
+ 
++ENV{DMI_VENDOR}=="FUJITSU SIEMENS", ATTR{[dmi/id]product_name}=="AMILO Si 1848+u", RUN+="keyboard-force-release.sh $devpath fujitsu-amilo-si1848"
++
+ LABEL="force_release_end"
+diff --git a/extras/keymap/force-release-maps/fujitsu-amilo-si1848 b/extras/keymap/force-release-maps/fujitsu-amilo-si1848
+new file mode 100644
+index 0000000..1718673
+--- /dev/null
++++ b/extras/keymap/force-release-maps/fujitsu-amilo-si1848
+@@ -0,0 +1,3 @@
++0xa0 #mute
++0xae #volume up
++0xb0 #volume down
+-- 
+1.7.3.2
+

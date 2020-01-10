@@ -1,0 +1,29 @@
+diff --git a/udev/udevd.c b/udev/udevd.c
+index 40c9db3..524cd0f 100644
+--- a/udev/udevd.c
++++ b/udev/udevd.c
+@@ -49,6 +49,8 @@
+ #define UDEVD_PRIORITY			-4
+ #define UDEV_PRIORITY			-2
+ 
++#define UDEV_EVENT_TIMEOUT_STR "600"
++
+ static bool debug;
+ 
+ static void log_fn(struct udev *udev, int priority,
+@@ -1034,6 +1036,15 @@ int main(int argc, char *argv[])
+ 		close(fd);
+ 	}
+ 
++	/* Set firmware loading timeout to UDEV_EVENT_TIMEOUT */
++	fd = open("/sys/class/firmware/timeout", O_RDWR);
++	if (fd < 0 ) {
++		if (errno != EEXIST) err(udev, "error setting /sys/class/firmware/timeout: %m\n");
++	} else {
++		write(fd, UDEV_EVENT_TIMEOUT_STR, sizeof(UDEV_EVENT_TIMEOUT_STR));
++		close(fd);
++	}
++
+ 	/* in trace mode run one event after the other */
+ 	if (debug_trace) {
+ 		max_childs = 1;

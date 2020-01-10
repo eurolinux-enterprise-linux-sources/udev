@@ -1,0 +1,31 @@
+From 1e69248fec27deb701713d2dc7bc449976ef0cce Mon Sep 17 00:00:00 2001
+From: Martin Pitt <martin.pitt@ubuntu.com>
+Date: Tue, 5 Jan 2010 09:52:30 +0100
+Subject: [PATCH] keymap: Document force-release
+
+Make a note in README.keymap.txt about stuck keys which need a force-release
+quirk.
+---
+ extras/keymap/README.keymap.txt |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+
+diff --git a/extras/keymap/README.keymap.txt b/extras/keymap/README.keymap.txt
+index ae8916b..9c2d5dc 100644
+--- a/extras/keymap/README.keymap.txt
++++ b/extras/keymap/README.keymap.txt
+@@ -74,6 +74,12 @@ for inclusion you need to do the following steps:
+  /lib/udev/keymaps/ for existing key map files and make sure that you use the
+  same structure.
+ 
++ If the key only ever works once and then your keyboard (or the entire desktop)
++ gets stuck for a long time, then it is likely that the BIOS fails to send a
++ corresponding "key release" event after the key press event. Please note down
++ this case as well, as it can be worked around in
++ /lib/udev/keymaps/95-keyboard-force-release.rules .
++
+  4. Find out your system vendor and product:
+ 
+  cat /sys/class/dmi/id/sys_vendor
+-- 
+1.7.3.2
+

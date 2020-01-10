@@ -1,0 +1,68 @@
+From 5da8438016bbb8a9892abdd650127208c90c14cb Mon Sep 17 00:00:00 2001
+From: Jerone Young <jerone.young@canonical.com>
+Date: Sun, 3 Jan 2010 11:42:12 +0100
+Subject: [PATCH] keymap: Lenovo Thinkpad USB Keyboard with Tracepoint
+
+Add support for special function keys on Lenovo Thinkpad USB Keyboard
+Tracepoint.
+
+    - VoIP hotkey "FN+F6" is mapped to camera, and may need to change
+      if there is a standard VoIP hotkey defined.
+    - Mute Microphone key has not been defined, as there is no
+      standard key defined for it yet.
+
+Signed-off-by: Jerone Young <jerone.young@canonical.com>
+Signed-off-by: Martin Pitt <martin.pitt@ubuntu.com>
+---
+ Makefile.am                                        |    1 +
+ extras/keymap/95-keymap.rules                      |    1 +
+ .../lenovo-thinkpad-usb-keyboard-trackpoint        |   13 +++++++++++++
+ 3 files changed, 15 insertions(+), 0 deletions(-)
+ create mode 100644 extras/keymap/keymaps/lenovo-thinkpad-usb-keyboard-trackpoint
+
+diff --git a/Makefile.am b/Makefile.am
+index 0d2e1b6..8fd6e32 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -519,6 +519,7 @@ dist_udevkeymap_DATA = \
+ 	extras/keymap/keymaps/hewlett-packard-tx2 \
+ 	extras/keymap/keymaps/inventec-symphony_6.0_7.0 \
+ 	extras/keymap/keymaps/lenovo-3000 \
++	extras/keymap/keymaps/lenovo-thinkpad-usb-keyboard-trackpoint \
+ 	extras/keymap/keymaps/lenovo-thinkpad_x6_tablet \
+ 	extras/keymap/keymaps/lenovo-thinkpad_x200_tablet \
+ 	extras/keymap/keymaps/logitech-wave \
+diff --git a/extras/keymap/95-keymap.rules b/extras/keymap/95-keymap.rules
+index d123c10..33633f6 100644
+--- a/extras/keymap/95-keymap.rules
++++ b/extras/keymap/95-keymap.rules
+@@ -21,6 +21,7 @@ LABEL="keyboard_usbcheck"
+ 
+ ENV{ID_VENDOR}=="Logitech*", ATTRS{name}=="Logitech USB Multimedia Keyboard", RUN+="keymap $name logitech-wave"
+ ENV{ID_VENDOR}=="Logitech*", ATTRS{name}=="Logitech USB Receiver", RUN+="keymap $name logitech-wave-cordless"
++ENV{ID_VENDOR}=="Lite-On_Technology_Corp*", ATTRS{name}=="Lite-On Technology Corp. ThinkPad USB Keyboard with TrackPoint", RUN+="keymap $name lenovo-thinkpad-usb-keyboard-trackpoint"
+ 
+ GOTO="keyboard_end"
+ 
+diff --git a/extras/keymap/keymaps/lenovo-thinkpad-usb-keyboard-trackpoint b/extras/keymap/keymaps/lenovo-thinkpad-usb-keyboard-trackpoint
+new file mode 100644
+index 0000000..2566f03
+--- /dev/null
++++ b/extras/keymap/keymaps/lenovo-thinkpad-usb-keyboard-trackpoint
+@@ -0,0 +1,13 @@
++0x90012 screenlock # Fn+F2
++0x90013 battery # Fn+F3
++0x90014 wlan # Fn+F5
++0x90016 switchvideomode # Fn+F7
++0x90017 f22 # Fn+F8  touchpadtoggle
++0x90019 suspend # Fn+F12
++0x9001A brightnessup # Fn+Home
++0x9001B brightnessdown # Fn+End
++0x9001D zoom # Fn+Space
++0x90011 prog1 # Thinkvantage button
++
++0x90015 camera # Fn+F6 headset/camera VoIP key  ??
++0x90010 # Microphone mute button  ??
+-- 
+1.7.3.2
+

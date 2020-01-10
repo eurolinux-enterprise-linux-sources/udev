@@ -1,0 +1,26 @@
+diff -ur udev-147/extras/rule_generator/75-persistent-net-generator.rules udev-147.rg2/extras/rule_generator/75-persistent-net-generator.rules
+--- udev-147/extras/rule_generator/75-persistent-net-generator.rules	2011-01-26 12:15:38.000000000 +0100
++++ udev-147.rg2/extras/rule_generator/75-persistent-net-generator.rules	2011-01-26 12:14:36.000000000 +0100
+@@ -30,8 +30,11 @@
+ # match interface type
+ ENV{MATCHIFTYPE}="$attr{type}"
+ 
++# do not use empty address
++ENV{MATCHADDR}=="00:00:00:00:00:00", ENV{MATCHADDR}=""
++
+ # do not use "locally administered" MAC address
+-ATTR{addr_assign_type}=="?*", ATTR{addr_assign_type}!="0", ENV{MATCHADDR}="", ENV{MATCHID}="$env{NET_MATCHID}", GOTO="globally_administered_whitelist"
++ATTR{addr_assign_type}=="?*", ATTR{addr_assign_type}!="0", ENV{MATCHADDR}="", ENV{MATCHID}="$env{NET_MATCHID}"
+ ATTR{addr_assign_type}=="0", GOTO="globally_administered_whitelist"
+ 
+ # These vendors are known to violate the local MAC address assignment scheme
+@@ -66,9 +69,6 @@
+ # do not use "locally administered" MAC address
+ ENV{MATCHADDR}=="?[2367abef]:*", ENV{MATCHADDR}=""
+ 
+-# do not use empty address
+-ENV{MATCHADDR}=="00:00:00:00:00:00", ENV{MATCHADDR}=""
+-
+ LABEL="globally_administered_whitelist"
+ 
+ # build comment line for generated rule:

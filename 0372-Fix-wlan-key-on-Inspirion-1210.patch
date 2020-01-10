@@ -1,0 +1,29 @@
+From 7afe4ccd1e75dccb5e321ec740238705db22dbd0 Mon Sep 17 00:00:00 2001
+From: Jerone Young <jerone.young@canonical.com>
+Date: Fri, 28 May 2010 15:30:19 -0500
+Subject: [PATCH] Fix wlan key on Inspirion 1210
+
+This fixed wlan key on Inspirion 1210 machines.
+
+Signed-off-by: Jerone Young <jerone.young@canonical.com>
+Signed-off-by: Martin Pitt <martin.pitt@ubuntu.com>
+---
+ extras/keymap/95-keymap.rules |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/extras/keymap/95-keymap.rules b/extras/keymap/95-keymap.rules
+index 8c00ba1..c321fbb 100644
+--- a/extras/keymap/95-keymap.rules
++++ b/extras/keymap/95-keymap.rules
+@@ -53,7 +53,7 @@ GOTO="keyboard_end"
+ LABEL="keyboard_vendorcheck"
+ 
+ ENV{DMI_VENDOR}=="Dell*", RUN+="keymap $name dell"
+-ENV{DMI_VENDOR}=="Dell*", ATTR{[dmi/id]product_name}=="Inspiron 1011", RUN+="keymap $name 0x84 wlan"
++ENV{DMI_VENDOR}=="Dell*", ATTR{[dmi/id]product_name}=="Inspiron 1011|Inspiron 1210", RUN+="keymap $name 0x84 wlan"
+ 
+ ENV{DMI_VENDOR}=="Compaq*", ATTR{[dmi/id]product_name}=="*E500*|*Evo N*", RUN+="keymap $name compaq-e_evo"
+ 
+-- 
+1.7.3.2
+

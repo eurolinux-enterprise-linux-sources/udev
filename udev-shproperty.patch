@@ -1,0 +1,16 @@
+diff -up udev-147/udev/udevadm-info.c.shprop udev-147/udev/udevadm-info.c
+--- udev-147/udev/udevadm-info.c.shprop	2009-09-08 22:04:07.000000000 +0200
++++ udev-147/udev/udevadm-info.c	2011-02-16 14:43:50.000000000 +0100
+@@ -428,7 +429,11 @@ int udevadm_info(struct udev *udev, int 
+ 		case QUERY_PROPERTY:
+ 			list_entry = udev_device_get_properties_list_entry(device);
+ 			while (list_entry != NULL) {
+-				printf("%s=%s\n", udev_list_entry_get_name(list_entry), udev_list_entry_get_value(list_entry));
++				if (export == 1) {
++					printf("%s='%s'\n", udev_list_entry_get_name(list_entry), udev_list_entry_get_value(list_entry));
++				} else {
++					printf("%s=%s\n", udev_list_entry_get_name(list_entry), udev_list_entry_get_value(list_entry));
++				}
+ 				list_entry = udev_list_entry_get_next(list_entry);
+ 			}
+ 			break;

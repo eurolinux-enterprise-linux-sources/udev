@@ -1,0 +1,30 @@
+diff -up udev-147/extras/path_id/path_id.c.cciss udev-147/extras/path_id/path_id.c
+--- udev-147/extras/path_id/path_id.c.cciss	2012-06-07 19:25:03.939166224 +0200
++++ udev-147/extras/path_id/path_id.c	2012-06-07 19:25:06.444157295 +0200
+@@ -371,7 +371,16 @@ static struct udev_device *handle_usb(st
+ 
+ static struct udev_device *handle_cciss(struct udev_device *parent, char **path)
+ {
+-	return NULL;
++	const char *str;
++	unsigned int controller, disk;
++
++	str = udev_device_get_sysname(parent);
++	if (sscanf(str, "c%ud%u%*s", &controller, &disk) != 2)
++	  return NULL;
++
++	path_prepend(path, "cciss-disk%u", disk);
++	parent = skip_subsystem(parent, "cciss");
++	return parent;
+ }
+ 
+ static struct udev_device *handle_ccw(struct udev_device *parent, struct udev_device *dev, char **path)
+@@ -482,7 +491,7 @@ int main(int argc, char **argv)
+ 		} else if (strcmp(subsys, "scsi") == 0) {
+ 			parent = handle_scsi(parent, &path);
+ 		} else if (strcmp(subsys, "cciss") == 0) {
+-			handle_cciss(parent, &path);
++			parent = handle_cciss(parent, &path);
+ 		} else if (strcmp(subsys, "usb") == 0) {
+ 			parent = handle_usb(parent, &path);
+ 		} else if (strcmp(subsys, "serio") == 0) {

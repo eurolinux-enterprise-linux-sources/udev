@@ -1,0 +1,29 @@
+From d05137cca5f92a102a0bdd55e42de9852a739913 Mon Sep 17 00:00:00 2001
+From: Jerone Young <jerone.young@canonical.com>
+Date: Wed, 21 Apr 2010 12:19:37 -0500
+Subject: [PATCH] Fix volume keys not releasing for Pegatron platform
+
+Pegatron has a new platform coming out being sold by many small
+manufacturers. This platform has volume keys that are not sending a key
+release. This patch ensures those keys send release.
+
+Signed-off-by: Jerone Young <jerone.young@canonical.com>
+Signed-off-by: Martin Pitt <martin.pitt@ubuntu.com>
+---
+ extras/keymap/95-keyboard-force-release.rules |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/extras/keymap/95-keyboard-force-release.rules b/extras/keymap/95-keyboard-force-release.rules
+index c9edacf..011b2e3 100644
+--- a/extras/keymap/95-keyboard-force-release.rules
++++ b/extras/keymap/95-keyboard-force-release.rules
+@@ -29,4 +29,6 @@ ENV{DMI_VENDOR}=="FOXCONN", ATTR{[dmi/id]product_name}=="QBOOK", RUN+="keyboard-
+ 
+ ENV{DMI_VENDOR}=="MTC", ATTR{[dmi/id]product_version}=="A0", RUN+="keyboard-force-release.sh $devpath common-volume-keys"
+ 
++ENV{DMI_VENDOR}=="PEGATRON CORP.", ATTR{[dmi/id]product_name}=="Spring Peak", RUN+="keyboard-force-release.sh $devpath common-volume-keys"
++
+ LABEL="force_release_end"
+-- 
+1.7.3.2
+

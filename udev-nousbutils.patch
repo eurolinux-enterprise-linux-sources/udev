@@ -1,0 +1,13 @@
+--- udev-147/configure.ac	2012-03-01 19:32:01.319964369 +0100
++++ udev-147-new/configure.ac	2012-03-01 19:30:11.013151202 +0100
+@@ -66,8 +66,8 @@
+ 	AC_SUBST(LIBUSB_CFLAGS)
+ 	AC_SUBST(LIBUSB_LIBS)
+ 
+-	PKG_CHECK_MODULES(USBUTILS, usbutils >= 0.82)
+-	AC_SUBST([USB_DATABASE], [$($PKG_CONFIG --variable=usbids usbutils)])
++dnl	PKG_CHECK_MODULES(USBUTILS, usbutils >= 0.82)
++dnl	AC_SUBST([USB_DATABASE], [$($PKG_CONFIG --variable=usbids usbutils)])
+ 
+ 	AC_CHECK_FILES([/usr/share/pci.ids], [pciids=/usr/share/pci.ids])
+ 	AC_CHECK_FILES([/usr/share/hwdata/pci.ids], [pciids=/usr/share/hwdata/pci.ids])

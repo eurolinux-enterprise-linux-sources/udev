@@ -1,0 +1,54 @@
+From 2f151e0fbf354261e3a7f68fd28a032ace6978f8 Mon Sep 17 00:00:00 2001
+From: Martin Pitt <martin.pitt@ubuntu.com>
+Date: Mon, 25 Oct 2010 22:01:03 -0400
+Subject: [PATCH] keymap: Add Sony Vaio VGN71
+
+https://launchpad.net/bugs/625770
+---
+ Makefile.am                           |    1 +
+ extras/keymap/95-keymap.rules         |    4 ++++
+ extras/keymap/keymaps/module-sony-vgn |    5 +++++
+ 3 files changed, 10 insertions(+), 0 deletions(-)
+ create mode 100644 extras/keymap/keymaps/module-sony-vgn
+
+diff --git a/Makefile.am b/Makefile.am
+index 4dbdfd9..3a95046 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -587,6 +587,7 @@ dist_udevkeymap_DATA = \
+ 	extras/keymap/keymaps/module-lenovo \
+ 	extras/keymap/keymaps/module-sony \
+ 	extras/keymap/keymaps/module-sony-old \
++	extras/keymap/keymaps/module-sony-vgn \
+ 	extras/keymap/keymaps/olpc-xo \
+ 	extras/keymap/keymaps/onkyo \
+ 	extras/keymap/keymaps/oqo-model2 \
+diff --git a/extras/keymap/95-keymap.rules b/extras/keymap/95-keymap.rules
+index eda006e..c059ef0 100644
+--- a/extras/keymap/95-keymap.rules
++++ b/extras/keymap/95-keymap.rules
+@@ -48,6 +48,10 @@ ENV{DMI_VENDOR}=="Sony*", KERNELS=="input*", ATTRS{name}=="Sony Vaio Keys", RUN+
+ # Older Vaios have some different keys
+ ENV{DMI_VENDOR}=="Sony*", ATTR{[dmi/id]product_name}=="*PCG-C1*|*PCG-K25*|*PCG-F1*|*PCG-F2*|*PCG-F3*|*PCG-F4*|*PCG-F5*|*PCG-F6*|*PCG-FX*|*PCG-FRV*|*PCG-GR*|*PCG-TR*|*PCG-NV*|*PCG-Z*|*VGN-S360*", ATTRS{name}=="Sony Vaio Keys", RUN+="keymap $name module-sony-old"
+ 
++# Some Sony VGN models have yet another one
++ENV{DMI_VENDOR}=="Sony*", ATTR{[dmi/id]product_name}=="VGN-AR71MR", ATTRS{name}=="Sony Vaio Keys", RUN+="keymap $name module-sony-vgn"
++
++
+ #
+ # The following rules belong to standard i8042 AT keyboard with high key codes.
+ #
+diff --git a/extras/keymap/keymaps/module-sony-vgn b/extras/keymap/keymaps/module-sony-vgn
+new file mode 100644
+index 0000000..d8a9443
+--- /dev/null
++++ b/extras/keymap/keymaps/module-sony-vgn
+@@ -0,0 +1,5 @@
++0x00 brightnessdown # Fn+F5
++0x10 brightnessup # Fn+F6
++0x11 switchvideomode # Fn+F7
++0x12 zoom # Fn+F10
++0x15 suspend # Fn+F12
+-- 
+1.7.3.2
+

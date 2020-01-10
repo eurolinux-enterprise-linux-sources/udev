@@ -1,0 +1,30 @@
+From 219355e85a17176006ab30674280eb2e4169307c Mon Sep 17 00:00:00 2001
+From: Harald Hoyer <harald@redhat.com>
+Date: Mon, 2 Mar 2015 11:43:38 +0100
+Subject: [PATCH] ata_id - fixup all 8 not only 6 bytes of the fw_rev string
+
+The last two digits are in the wrong order:
+$ hdparm -I /dev/sda | grep
+Revision 4PC10362
+$ /lib/udev/ata_id -x /dev/sda | grep REVISION
+4PC10326
+---
+ extras/ata_id/ata_id.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/extras/ata_id/ata_id.c b/extras/ata_id/ata_id.c
+index 627f686..666646c 100644
+--- a/extras/ata_id/ata_id.c
++++ b/extras/ata_id/ata_id.c
+@@ -325,7 +325,7 @@ int main(int argc, char *argv[])
+ 		 * use and copy it into the hd_driveid struct for convenience
+ 		 */
+ 		disk_identify_fixup_string (identify,  10, 20);	/* serial */
+-		disk_identify_fixup_string (identify,  23,  6);	/* fwrev */
++		disk_identify_fixup_string (identify,  23,  8);	/* fwrev */
+ 		disk_identify_fixup_string (identify,  27, 40);	/* model */
+ 		disk_identify_fixup_uint16 (identify,   0);	/* configuration */
+ 		disk_identify_fixup_uint16 (identify,  75);	/* queue depth */
+-- 
+1.7.1
+

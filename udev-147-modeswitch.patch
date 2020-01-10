@@ -1,0 +1,19 @@
+diff -ur udev-147.old/extras/modem-modeswitch/61-mobile-action.rules udev-147/extras/modem-modeswitch/61-mobile-action.rules
+--- udev-147.old/extras/modem-modeswitch/61-mobile-action.rules	2009-11-10 06:49:47.000000000 +0100
++++ udev-147/extras/modem-modeswitch/61-mobile-action.rules	2011-07-25 15:17:58.000000000 +0200
+@@ -12,4 +12,4 @@
+ 
+ # ZTE MF6xx
+ ACTION=="add", ENV{ID_CDROM}=="1", ENV{ID_VENDOR_ID}=="19d2", ENV{ID_MODEL_ID}=="2000", RUN+="/usr/bin/eject %k"
+-
++ACTION=="add", ENV{ID_CDROM}=="1", ENV{ID_VENDOR_ID}=="1410", ENV{ID_MODEL_ID}=="5020", RUN+="/usr/bin/eject %k"
+diff -ur udev-147.old/extras/modem-modeswitch/61-option-modem-modeswitch.rules udev-147/extras/modem-modeswitch/61-option-modem-modeswitch.rules
+--- udev-147.old/extras/modem-modeswitch/61-option-modem-modeswitch.rules	2011-07-25 15:14:12.000000000 +0200
++++ udev-147/extras/modem-modeswitch/61-option-modem-modeswitch.rules	2011-07-25 15:14:55.000000000 +0200
+@@ -35,6 +35,5 @@
+ ATTRS{idVendor}=="0af0", ATTRS{idProduct}=="7601", RUN+="modem-modeswitch -v 0x%s{idVendor} -p 0x%s{idProduct} -t option-zerocd"
+ ATTRS{idVendor}=="0af0", ATTRS{idProduct}=="7901", RUN+="modem-modeswitch -v 0x%s{idVendor} -p 0x%s{idProduct} -t option-zerocd"
+ ATTRS{idVendor}=="12d1", ATTRS{idProduct}=="1446", RUN+="modem-modeswitch -v 0x%s{idVendor} -p 0x%s{idProduct} -t option-zerocd"
+-ATTRS{idVendor}=="19d2", ATTRS{idProduct}=="2000", RUN+="modem-modeswitch -v 0x%s{idVendor} -p 0x%s{idProduct} -t option-zerocd"
+ 
+ LABEL="option_zerocd_end"

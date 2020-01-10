@@ -1,0 +1,32 @@
+diff -up udev-147/rules/rules.d/60-persistent-storage.rules.xen udev-147/rules/rules.d/60-persistent-storage.rules
+--- udev-147/rules/rules.d/60-persistent-storage.rules.xen	2011-09-20 17:21:22.000000000 +0200
++++ udev-147/rules/rules.d/60-persistent-storage.rules	2011-09-23 13:23:13.000000000 +0200
+@@ -62,18 +62,25 @@ ENV{DEVTYPE}=="disk", ENV{ID_PATH}=="?*"
+ ENV{DEVTYPE}=="partition", ENV{ID_PATH}=="?*", SYMLINK+="disk/by-path/$env{ID_PATH}-part%n"
+ 
+ # skip unpartitioned removable media devices from drivers which do not send "change" events
+-ENV{DEVTYPE}=="disk", KERNEL!="sd*|sr*", ATTR{removable}=="1", GOTO="persistent_storage_end"
++ENV{DEVTYPE}=="disk", KERNEL!="xvd*|sd*|sr*", ATTR{removable}=="1", GOTO="persistent_storage_end"
+ 
+ # probe filesystem metadata of optical drives which have a media inserted
+ KERNEL=="sr*", ENV{ID_CDROM_MEDIA_TRACK_COUNT_DATA}=="?*", ENV{ID_CDROM_MEDIA_SESSION_LAST_OFFSET}=="?*", IMPORT{program}="/sbin/blkid -o udev -p -u noraid -O $env{ID_CDROM_MEDIA_SESSION_LAST_OFFSET} $tempnode"
++KERNEL=="xvd*", ATTR{removable}=="1", ENV{ID_CDROM_MEDIA_TRACK_COUNT_DATA}=="?*", ENV{ID_CDROM_MEDIA_SESSION_LAST_OFFSET}=="?*", IMPORT{program}="/sbin/blkid -o udev -p -u noraid -O $env{ID_CDROM_MEDIA_SESSION_LAST_OFFSET} $tempnode"
++
+ # single-session CDs do not have ID_CDROM_MEDIA_SESSION_LAST_OFFSET
+ KERNEL=="sr*", ENV{ID_CDROM_MEDIA_TRACK_COUNT_DATA}=="?*", ENV{ID_CDROM_MEDIA_SESSION_LAST_OFFSET}=="", IMPORT{program}="/sbin/blkid -o udev -p -u noraid $tempnode"
++KERNEL=="xvd*", ATTR{removable}=="1", ENV{ID_CDROM_MEDIA_TRACK_COUNT_DATA}=="?*", ENV{ID_CDROM_MEDIA_SESSION_LAST_OFFSET}=="", IMPORT{program}="/sbin/blkid -o udev -p -u noraid $tempnode"
+ 
+ # probe filesystem metadata of disks
+-KERNEL!="sr*", IMPORT{program}="/sbin/blkid -o udev -p $tempnode"
++KERNEL!="xvd*|sr*", IMPORT{program}="/sbin/blkid -o udev -p $tempnode"
++KERNEL=="xvd*", ENV{DEVTYPE}!="partition", ATTR{removable}!="1", IMPORT{program}="/sbin/blkid -o udev -p $tempnode"
++KERNEL=="xvd*", ENV{DEVTYPE}=="partition", IMPORT{program}="/sbin/blkid -o udev -p $tempnode"
+ 
+ # watch for future changes
+-KERNEL!="sr*", OPTIONS+="watch"
++KERNEL!="xvd*|sr*", OPTIONS+="watch"
++KERNEL=="xvd*", ENV{DEVTYPE}!="partition", ATTR{removable}!="1", OPTIONS+="watch"
++KERNEL=="xvd*", ENV{DEVTYPE}=="partition", OPTIONS+="watch"
+ 
+ # by-label/by-uuid links (filesystem metadata)
+ ENV{ID_FS_USAGE}=="filesystem|other|crypto", ENV{ID_FS_UUID_ENC}=="?*", SYMLINK+="disk/by-uuid/$env{ID_FS_UUID_ENC}"

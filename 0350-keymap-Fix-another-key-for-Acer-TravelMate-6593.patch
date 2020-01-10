@@ -1,0 +1,26 @@
+From 43d08246dbb3a01e88062d5315194ee889e52dd4 Mon Sep 17 00:00:00 2001
+From: Martin Pitt <martin.pitt@ubuntu.com>
+Date: Wed, 24 Mar 2010 18:56:20 +0100
+Subject: [PATCH] keymap: Fix another key for Acer TravelMate 6593
+
+https://launchpad.net/bugs/536914
+---
+ extras/keymap/95-keymap.rules |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/extras/keymap/95-keymap.rules b/extras/keymap/95-keymap.rules
+index b3b08ae..dd58453 100644
+--- a/extras/keymap/95-keymap.rules
++++ b/extras/keymap/95-keymap.rules
+@@ -78,7 +78,7 @@ ENV{DMI_VENDOR}=="Acer*", RUN+="keymap $name acer"
+ ENV{DMI_VENDOR}=="Acer*", ATTR{[dmi/id]product_name}=="Extensa*", ATTR{[dmi/id]product_name}=="*5210*|*5220*|*5610*|*5620*|*5720*", RUN+="keymap $name 0xEE screenlock"
+ ENV{DMI_VENDOR}=="Acer*", ATTR{[dmi/id]product_name}=="TravelMate*C300*", RUN+="keymap $name acer-travelmate_c300"
+ ENV{DMI_VENDOR}=="Acer*", ATTR{[dmi/id]product_name}=="TravelMate*6292*|TravelMate*8471*|Aspire 1810T*|AO751h|AO531h", RUN+="keymap $name 0xD9 bluetooth"
+-ENV{DMI_VENDOR}=="Acer*", ATTR{[dmi/id]product_name}=="TravelMate 6593|Aspire 1640", RUN+="keymap $name 0xB2 www"
++ENV{DMI_VENDOR}=="Acer*", ATTR{[dmi/id]product_name}=="TravelMate 6593|Aspire 1640", RUN+="keymap $name 0xB2 www 0xEE screenlock"
+ ENV{DMI_VENDOR}=="Acer*", ATTR{[dmi/id]product_name}=="Aspire 6920", RUN+="keymap $name acer-aspire_6920"
+ ENV{DMI_VENDOR}=="Acer*", ATTR{[dmi/id]product_name}=="Aspire 5920G", RUN+="keymap $name acer-aspire_5920g"
+ ENV{DMI_VENDOR}=="Acer*", ATTR{[dmi/id]product_name}=="Aspire 5720*", RUN+="keymap $name acer-aspire_5720"
+-- 
+1.7.3.2
+

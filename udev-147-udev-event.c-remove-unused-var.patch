@@ -1,0 +1,24 @@
+From 9f456d7b2473ec732b98a9dd5c6c692521ccfe71 Mon Sep 17 00:00:00 2001
+From: RH udev team <udev-maint@redhat.com>
+Date: Fri, 26 Jul 2013 15:26:28 +0200
+Subject: [PATCH] udev-event.c: remove unused var
+
+---
+ udev/udev-event.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/udev/udev-event.c b/udev/udev-event.c
+index 2b83c92..0f3c931 100644
+--- a/udev/udev-event.c
++++ b/udev/udev-event.c
+@@ -483,7 +483,6 @@ static int rename_netif(struct udev_event *event)
+ 		rename_netif_kernel_log(ifr);
+ 	else {
+ 		int loop;
+-		char *newdup;
+ 
+ 		/* see if the destination interface name already exists */
+ 		if (errno != EEXIST) {
+-- 
+1.8.3.1
+

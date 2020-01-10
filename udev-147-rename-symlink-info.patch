@@ -1,0 +1,19 @@
+diff -ru udev-147.old/udev/udev-node.c udev-147/udev/udev-node.c
+--- udev-147/udev/udev-node.c	2013-01-09 15:02:51.087081966 +0100
++++ udev-147/udev/udev-node.c	2013-01-15 13:29:36.416789939 +0100
+@@ -208,12 +208,12 @@
+ 		udev_selinux_resetfscreatecon(udev);
+ 	} while (err == -ENOENT);
+ 	if (err != 0) {
+-		err(udev, "symlink(%s, %s) failed: %m\n", target, slink_tmp);
++		info(udev, "symlink(%s, %s) failed: %m\n", target, slink_tmp);
+ 		goto exit;
+ 	}
+ 	err = rename(slink_tmp, slink);
+ 	if (err != 0) {
+-		err(udev, "rename(%s, %s) failed: %m\n", slink_tmp, slink);
++		info(udev, "rename(%s, %s) failed: %m\n", slink_tmp, slink);
+ 		unlink(slink_tmp);
+ 	}
+ exit:
+

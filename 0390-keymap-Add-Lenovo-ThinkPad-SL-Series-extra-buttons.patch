@@ -1,0 +1,25 @@
+From c3b3a979ee6cd4ea19f6ca333ce778925aa8c9a5 Mon Sep 17 00:00:00 2001
+From: Martin Pitt <martin.pitt@ubuntu.com>
+Date: Wed, 7 Jul 2010 23:18:19 +0200
+Subject: [PATCH] keymap: Add Lenovo ThinkPad SL Series extra buttons
+
+Sent by Quentin Denis <quentin.denis@gmail.com> via private mail.
+---
+ extras/keymap/95-keymap.rules |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/extras/keymap/95-keymap.rules b/extras/keymap/95-keymap.rules
+index 4ae5bde..6e37067 100644
+--- a/extras/keymap/95-keymap.rules
++++ b/extras/keymap/95-keymap.rules
+@@ -41,6 +41,7 @@ ENV{DMI_VENDOR}=="", GOTO="keyboard_end"
+ 
+ ENV{DMI_VENDOR}=="IBM*", KERNELS=="input*", ATTRS{name}=="ThinkPad Extra Buttons", RUN+="keymap $name module-ibm"
+ ENV{DMI_VENDOR}=="LENOVO*", KERNELS=="input*", ATTRS{name}=="ThinkPad Extra Buttons", RUN+="keymap $name module-lenovo"
++ENV{DMI_VENDOR}=="LENOVO*", KERNELS=="input*", ATTRS{name}=="Lenovo ThinkPad SL Series extra buttons", RUN+="keymap $name 0x0E bluetooth"
+ ENV{DMI_VENDOR}=="ASUS*", KERNELS=="input*", ATTRS{name}=="Asus Extra Buttons", ATTR{[dmi/id]product_name}=="W3J", RUN+="keymap $name module-asus-w3j"
+ ENV{DMI_VENDOR}=="Sony*", KERNELS=="input*", ATTRS{name}=="Sony Vaio Keys", RUN+="keymap $name module-sony"
+ 
+-- 
+1.7.3.2
+

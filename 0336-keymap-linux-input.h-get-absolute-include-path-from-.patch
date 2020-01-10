@@ -1,0 +1,49 @@
+From d8f33f02527c5773438c2a29308edf25d06ce573 Mon Sep 17 00:00:00 2001
+From: Kay Sievers <kay.sievers@vrfy.org>
+Date: Mon, 25 Jan 2010 08:22:47 +0100
+Subject: [PATCH] keymap: linux/input.h - get absolute include path from gcc
+
+---
+ Makefile.am  |    2 +-
+ configure.ac |    5 +++++
+ 2 files changed, 6 insertions(+), 1 deletions(-)
+
+diff --git a/Makefile.am b/Makefile.am
+index b7ced1d..3567af8 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -546,7 +546,7 @@ udevkeymapforcereldir = $(libexecdir)/keymaps/force-release
+ dist_udevkeymapforcerel_DATA = \
+ 	extras/keymap/force-release-maps/samsung-other
+ 
+-extras/keymap/keys.txt: /usr/include/linux/input.h
++extras/keymap/keys.txt: $(INCLUDE_PREFIX)/linux/input.h
+ 	mkdir -p extras/keymap
+ 	$(AM_V_GEN)$(AWK) '/^#define.*KEY_[^ ]+[ \t]+[0-9]/ { if ($$2 != "KEY_MAX") { print $$2 } }' < $< | sed 's/^KEY_COFFEE$$/KEY_SCREENLOCK/' > $@
+ 
+diff --git a/configure.ac b/configure.ac
+index 08df0a9..4cecb86 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -81,6 +81,9 @@ if test "x$enable_extras" = xyes; then
+ 			AC_MSG_ERROR([pci.ids not found, try --with-pci-ids-path=])
+ 		fi])
+ 	AC_SUBST(PCI_DATABASE)
++
++	AC_CHECK_HEADER([linux/input.h], [:], AC_MSG_ERROR([kernel headers not found]))
++	AC_SUBST([INCLUDE_PREFIX], [$(echo '#include <linux/input.h>' | eval $ac_cpp -E - | sed -n '/linux\/input.h/ {s:.*"\(.*\)/linux/input.h".*:\1:; p; q}')])
+ fi
+ AM_CONDITIONAL([ENABLE_EXTRAS], [test "x$enable_extras" = xyes])
+ 
+@@ -126,6 +129,8 @@ AC_MSG_RESULT([
+ 	mandir:			${mandir}
+ 	includedir:		${includedir}
+ 
++	include_prefix:		${INCLUDE_PREFIX}
++
+ 	logging:		${enable_logging}
+ 	debug:			${enable_debug}
+ 	selinux:		${with_selinux}
+-- 
+1.7.3.2
+

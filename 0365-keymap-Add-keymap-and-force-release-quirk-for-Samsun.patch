@@ -1,0 +1,43 @@
+From 417ec5a850a7a6ed07d27aea57969343900e7971 Mon Sep 17 00:00:00 2001
+From: Yin Kangkai <kangkai.yin@intel.com>
+Date: Thu, 6 May 2010 10:06:43 +0800
+Subject: [PATCH] keymap: Add keymap and force-release quirk for Samsung N128
+
+http://bugs.meego.com/show_bug.cgi?id=1530
+
+Signed-off-by: Yin Kangkai <kangkai.yin@intel.com>
+Signed-off-by: Martin Pitt <martin.pitt@ubuntu.com>
+---
+ extras/keymap/95-keyboard-force-release.rules |    2 +-
+ extras/keymap/95-keymap.rules                 |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/extras/keymap/95-keyboard-force-release.rules b/extras/keymap/95-keyboard-force-release.rules
+index 011b2e3..7c334ce 100644
+--- a/extras/keymap/95-keyboard-force-release.rules
++++ b/extras/keymap/95-keyboard-force-release.rules
+@@ -19,7 +19,7 @@ DRIVER!="atkbd", GOTO="force_release_end"
+ ENV{DMI_VENDOR}="$attr{[dmi/id]sys_vendor}"
+ 
+ 
+-ENV{DMI_VENDOR}=="[sS][aA][mM][sS][uU][nN][gG]*", ATTR{[dmi/id]product_name}=="*N130*|*N140*|*SR70S/SR71S*|*Q210/P210*", RUN+="keyboard-force-release.sh $devpath samsung-other"
++ENV{DMI_VENDOR}=="[sS][aA][mM][sS][uU][nN][gG]*", ATTR{[dmi/id]product_name}=="*N128*|*N130*|*N140*|*SR70S/SR71S*|*Q210/P210*", RUN+="keyboard-force-release.sh $devpath samsung-other"
+ 
+ ENV{DMI_VENDOR}=="Dell Inc.", ATTR{[dmi/id]product_name}=="Studio 1557|Studio 1558", RUN+="keyboard-force-release.sh $devpath common-volume-keys"
+ 
+diff --git a/extras/keymap/95-keymap.rules b/extras/keymap/95-keymap.rules
+index a27bc6d..8c00ba1 100644
+--- a/extras/keymap/95-keymap.rules
++++ b/extras/keymap/95-keymap.rules
+@@ -110,7 +110,7 @@ ENV{DMI_VENDOR}=="INVENTEC", ATTR{[dmi/id]product_name}=="SYMPHONY 6.0/7.0", RUN
+ 
+ ENV{DMI_VENDOR}=="MAXDATA", ATTR{[dmi/id]product_name}=="Pro 7000*", RUN+="keymap $name maxdata-pro_7000"
+ 
+-ENV{DMI_VENDOR}=="[sS][aA][mM][sS][uU][nN][gG]*", ATTR{[dmi/id]product_name}=="*NC10*|*NC20*|*N130*|*SP55S*|*SQ45S70S*|*SX60P*|*SX22S*|*SX30S*|*R59P/R60P/R61P*|*SR70S/SR71S*|*Q210*|*Q310*|*X05*|*P560*|*R560*", RUN+="keymap $name samsung-other"
++ENV{DMI_VENDOR}=="[sS][aA][mM][sS][uU][nN][gG]*", ATTR{[dmi/id]product_name}=="*NC10*|*NC20*|*N128*|*N130*|*SP55S*|*SQ45S70S*|*SX60P*|*SX22S*|*SX30S*|*R59P/R60P/R61P*|*SR70S/SR71S*|*Q210*|*Q310*|*X05*|*P560*|*R560*", RUN+="keymap $name samsung-other"
+ ENV{DMI_VENDOR}=="[sS][aA][mM][sS][uU][nN][gG]*", ATTR{[dmi/id]product_name}=="*SX20S*", RUN+="keymap $name samsung-sx20s"
+ ENV{DMI_VENDOR}=="[sS][aA][mM][sS][uU][nN][gG]*", ATTR{[dmi/id]product_name}=="SQ1US", RUN+="keymap $name samsung-sq1us"
+ 
+-- 
+1.7.3.2
+

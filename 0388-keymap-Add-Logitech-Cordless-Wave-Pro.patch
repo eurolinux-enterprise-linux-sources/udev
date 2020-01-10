@@ -1,0 +1,60 @@
+From 0fade61274497b874a7446fdd35bb7e1f5856f08 Mon Sep 17 00:00:00 2001
+From: Martin Pitt <martin.pitt@ubuntu.com>
+Date: Mon, 5 Jul 2010 09:35:36 +0200
+Subject: [PATCH] keymap: Add Logitech Cordless Wave Pro
+
+https://launchpad.net/bugs/592371
+---
+ Makefile.am                                      |    1 +
+ extras/keymap/95-keymap.rules                    |    3 +++
+ extras/keymap/keymaps/logitech-wave-pro-cordless |   12 ++++++++++++
+ 3 files changed, 16 insertions(+), 0 deletions(-)
+ create mode 100644 extras/keymap/keymaps/logitech-wave-pro-cordless
+
+diff --git a/Makefile.am b/Makefile.am
+index 940cb95..3406c3a 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -543,6 +543,7 @@ dist_udevkeymap_DATA = \
+ 	extras/keymap/keymaps/lg-x110 \
+ 	extras/keymap/keymaps/logitech-wave \
+ 	extras/keymap/keymaps/logitech-wave-cordless \
++	extras/keymap/keymaps/logitech-wave-pro-cordless \
+ 	extras/keymap/keymaps/maxdata-pro_7000 \
+ 	extras/keymap/keymaps/medion-fid2060 \
+ 	extras/keymap/keymaps/medionnb-a555 \
+diff --git a/extras/keymap/95-keymap.rules b/extras/keymap/95-keymap.rules
+index 517c87c..4ae5bde 100644
+--- a/extras/keymap/95-keymap.rules
++++ b/extras/keymap/95-keymap.rules
+@@ -21,6 +21,9 @@ LABEL="keyboard_usbcheck"
+ 
+ ENV{ID_VENDOR}=="Logitech*", ATTRS{name}=="Logitech USB Multimedia Keyboard", RUN+="keymap $name logitech-wave"
+ ENV{ID_VENDOR}=="Logitech*", ATTRS{name}=="Logitech USB Receiver", RUN+="keymap $name logitech-wave-cordless"
++# Logitech Cordless Wave Pro looks slightly weird; some hotkeys are coming through the mouse interface
++ENV{ID_VENDOR_ID}=="046d", ENV{ID_MODEL_ID}=="c529", ATTRS{name}=="Logitech USB Receiver", RUN+="keymap $name logitech-wave-pro-cordless"
++
+ ENV{ID_VENDOR}=="Lite-On_Technology_Corp*", ATTRS{name}=="Lite-On Technology Corp. ThinkPad USB Keyboard with TrackPoint", RUN+="keymap $name lenovo-thinkpad-usb-keyboard-trackpoint"
+ ENV{ID_VENDOR_ID}=="04b3", ENV{ID_MODEL_ID}=="301[89]", RUN+="keymap $name ibm-thinkpad-usb-keyboard-trackpoint"
+ 
+diff --git a/extras/keymap/keymaps/logitech-wave-pro-cordless b/extras/keymap/keymaps/logitech-wave-pro-cordless
+new file mode 100644
+index 0000000..e7aa022
+--- /dev/null
++++ b/extras/keymap/keymaps/logitech-wave-pro-cordless
+@@ -0,0 +1,12 @@
++0xC01B6 camera
++0xC0183 media
++0xC0184 wordprocessor
++0xC0186 spreadsheet
++0xC018E calendar
++0xC0223 homepage
++0xC01BC messenger
++0xC018A mail
++0xC0221 search
++0xC00B8 ejectcd
++0xC022D zoomin
++0xC022E zoomout
+-- 
+1.7.3.2
+

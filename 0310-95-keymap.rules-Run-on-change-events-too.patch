@@ -1,0 +1,25 @@
+From 92b8cea053c41315b57439400de9821928445fb3 Mon Sep 17 00:00:00 2001
+From: Martin Pitt <martin.pitt@ubuntu.com>
+Date: Mon, 14 Dec 2009 14:31:51 +0100
+Subject: [PATCH] 95-keymap.rules: Run on change events, too
+
+---
+ extras/keymap/95-keymap.rules |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/extras/keymap/95-keymap.rules b/extras/keymap/95-keymap.rules
+index 7cbf9aa..ad281cb 100644
+--- a/extras/keymap/95-keymap.rules
++++ b/extras/keymap/95-keymap.rules
+@@ -5,7 +5,7 @@
+ # a file name (in /lib/udev/keymaps), which has to contain scancode/keyname
+ # pairs.
+ 
+-ACTION!="add", GOTO="keyboard_end"
++ACTION!="add|change", GOTO="keyboard_end"
+ SUBSYSTEM!="input", GOTO="keyboard_end"
+ KERNEL!="event*", GOTO="keyboard_end"
+ 
+-- 
+1.7.3.2
+

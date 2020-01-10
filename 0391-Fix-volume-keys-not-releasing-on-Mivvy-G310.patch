@@ -1,0 +1,29 @@
+From 85c3d3b032b4c9a743a9c46eeede469eb999fb54 Mon Sep 17 00:00:00 2001
+From: Jerone Young <jerone.young@canonical.com>
+Date: Thu, 15 Jul 2010 22:01:24 -0500
+Subject: [PATCH] Fix volume keys not releasing on Mivvy G310
+
+keymap: add My Mivvy G310
+
+Fixes volume keys not sending key release on My Mivvy G310 laptop.
+
+Signed-off-by: Jerone Young <jerone.young@canonical.com>
+Signed-off-by: Martin Pitt <martin.pitt@ubuntu.com>
+---
+ extras/keymap/95-keyboard-force-release.rules |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/extras/keymap/95-keyboard-force-release.rules b/extras/keymap/95-keyboard-force-release.rules
+index db8a3b3..cb1fe78 100644
+--- a/extras/keymap/95-keyboard-force-release.rules
++++ b/extras/keymap/95-keyboard-force-release.rules
+@@ -33,4 +33,6 @@ ENV{DMI_VENDOR}=="PEGATRON CORP.", ATTR{[dmi/id]product_name}=="Spring Peak", RU
+ 
+ ENV{DMI_VENDOR}=="TOSHIBA", ATTR{[dmi/id]product_name}=="Satellite U300|Satellite Pro U300|Satellite U305", RUN+="keyboard-force-release.sh $devpath common-volume-keys"
+ 
++ENV{DMI_VENDOR}=="Viooo Corporation", ATTR{[dmi/id]product_name}=="PT17", RUN+="keyboard-force-release.sh $devpath common-volume-keys"
++
+ LABEL="force_release_end"
+-- 
+1.7.3.2
+

@@ -1,0 +1,103 @@
+diff -up udev-147/extras/keymap/keymap.c.git506 udev-147/extras/keymap/keymap.c
+--- udev-147/extras/keymap/keymap.c.git506	2011-07-25 15:47:20.000000000 +0200
++++ udev-147/extras/keymap/keymap.c	2011-07-25 15:47:21.000000000 +0200
+@@ -190,8 +190,7 @@ static int merge_table(int fd, const cha
+ 	f = fopen(filename, "r");
+ 	if (!f) {
+ 		perror(filename);
+-		r = -1;
+-		goto fail;
++		return -1;
+ 	}
+ 
+ 	while (!feof(f)) {
+@@ -241,6 +240,7 @@ static int merge_table(int fd, const cha
+ 				scancode, new_keycode, old_keycode);
+ 	}
+ fail:
++	fclose(f);
+ 	return r;
+ }
+ 
+diff -up udev-147/extras/path_id/path_id.c.git506 udev-147/extras/path_id/path_id.c
+--- udev-147/extras/path_id/path_id.c.git506	2011-07-25 15:47:21.000000000 +0200
++++ udev-147/extras/path_id/path_id.c	2011-07-25 15:47:21.000000000 +0200
+@@ -204,15 +204,13 @@ static struct udev_device *handle_scsi_i
+ 
+ 	/* find iscsi session */
+ 	transportdev = parent;
+-	while (1) {
++	for (;;) {
+ 		transportdev = udev_device_get_parent(transportdev);
+ 		if (transportdev == NULL)
+ 			return NULL;
+ 		if (strncmp(udev_device_get_sysname(transportdev), "session", 7) == 0)
+ 			break;
+ 	}
+-	if (transportdev == NULL)
+-		return NULL;
+ 
+ 	/* find iscsi session device */
+ 	sessiondev = udev_device_new_from_subsystem_sysname(udev, "iscsi_session", udev_device_get_sysname(transportdev));
+diff -up udev-147/extras/scsi_id/scsi_id.c.git506 udev-147/extras/scsi_id/scsi_id.c
+--- udev-147/extras/scsi_id/scsi_id.c.git506	2011-07-25 15:47:21.000000000 +0200
++++ udev-147/extras/scsi_id/scsi_id.c	2011-07-25 15:47:21.000000000 +0200
+@@ -198,6 +198,7 @@ static int get_file_options(struct udev 
+ 	 */
+ 	buffer = malloc(MAX_BUFFER_LEN);
+ 	if (!buffer) {
++		fclose(fd);
+ 		err(udev, "can't allocate memory\n");
+ 		return -1;
+ 	}
+diff -up udev-147/extras/scsi_id/scsi_serial.c.git506 udev-147/extras/scsi_id/scsi_serial.c
+--- udev-147/extras/scsi_id/scsi_serial.c.git506	2011-07-25 15:47:21.000000000 +0200
++++ udev-147/extras/scsi_id/scsi_serial.c	2011-07-25 15:47:21.000000000 +0200
+@@ -137,13 +137,13 @@ static int sg_err_category_new(struct ud
+ 		}
+ 		return SG_ERR_CAT_SENSE;
+ 	}
+-	if (!host_status) {
++	if (host_status) {
+ 		if ((host_status == DID_NO_CONNECT) ||
+ 		    (host_status == DID_BUS_BUSY) ||
+ 		    (host_status == DID_TIME_OUT))
+ 			return SG_ERR_CAT_TIMEOUT;
+ 	}
+-	if (!driver_status) {
++	if (driver_status) {
+ 		if (driver_status == DRIVER_TIMEOUT)
+ 			return SG_ERR_CAT_TIMEOUT;
+ 	}
+@@ -318,8 +318,10 @@ static int scsi_inquiry(struct udev *ude
+ 		{ INQUIRY_CMD, evpd, page, 0, buflen, 0 };
+ 	unsigned char sense[SENSE_BUFF_LEN];
+ 	void *io_buf;
+-	int retval;
++	struct sg_io_v4 io_v4;
++	struct sg_io_hdr io_hdr;
+ 	int retry = 3; /* rather random */
++	int retval;
+ 
+ 	if (buflen > SCSI_INQ_BUFF_LEN) {
+ 		info(udev, "buflen %d too long\n", buflen);
+@@ -330,8 +332,6 @@ resend:
+ 	dbg(udev, "%s evpd %d, page 0x%x\n", dev_scsi->kernel, evpd, page);
+ 
+ 	if (dev_scsi->use_sg == 4) {
+-		struct sg_io_v4 io_v4;
+-
+ 		memset(&io_v4, 0, sizeof(struct sg_io_v4));
+ 		io_v4.guard = 'Q';
+ 		io_v4.protocol = BSG_PROTOCOL_SCSI;
+@@ -344,8 +344,6 @@ resend:
+ 		io_v4.din_xferp = (uintptr_t)buf;
+ 		io_buf = (void *)&io_v4;
+ 	} else {
+-		struct sg_io_hdr io_hdr;
+-
+ 		memset(&io_hdr, 0, sizeof(struct sg_io_hdr));
+ 		io_hdr.interface_id = 'S';
+ 		io_hdr.cmd_len = sizeof(inq_cmd);
+diff -up udev-147/extras/udev-acl/udev-acl.c.git506 udev-147/extras/udev-acl/udev-acl.c
+diff -up udev-147/NEWS.git506 udev-147/NEWS

@@ -1,0 +1,25 @@
+From 2f5e49cd87c7d9e09e36e65812ec2be050dfb81b Mon Sep 17 00:00:00 2001
+From: Martin Pitt <martin.pitt@ubuntu.com>
+Date: Tue, 14 Sep 2010 18:21:13 +0200
+Subject: [PATCH] keymap: Add Lenovo Y550
+
+https://launchpad.net/bugs/543065
+---
+ extras/keymap/95-keymap.rules |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/extras/keymap/95-keymap.rules b/extras/keymap/95-keymap.rules
+index 913b380..9bc3cb6 100644
+--- a/extras/keymap/95-keymap.rules
++++ b/extras/keymap/95-keymap.rules
+@@ -67,6 +67,7 @@ ENV{DMI_VENDOR}=="LENOVO*", ATTR{[dmi/id]product_version}=="ThinkPad X6*", ATTR{
+ ENV{DMI_VENDOR}=="LENOVO*", ATTR{[dmi/id]product_version}=="ThinkPad X200 Tablet*", ATTR{[dmi/id]product_version}=="* Tablet" RUN+="keymap $name lenovo-thinkpad_x200_tablet"
+ ENV{DMI_VENDOR}=="LENOVO*", ATTR{[dmi/id]product_version}=="*IdeaPad*", RUN+="keymap $name lenovo-ideapad"
+ ENV{DMI_VENDOR}=="LENOVO*", ATTR{[dmi/id]product_name}=="S10-*", RUN+="keymap $name lenovo-ideapad"
++ENV{DMI_VENDOR}=="LENOVO", ATTR{[dmi/id]product_version}=="*IdeaPad Y550*", RUN+="keymap $name 0x95 media 0xA3 play"
+ 
+ ENV{DMI_VENDOR}=="Hewlett-Packard*", RUN+="keymap $name hewlett-packard"
+ ENV{DMI_VENDOR}=="Hewlett-Packard*", ATTR{[dmi/id]product_name}=="*[tT][aA][bB][lL][eE][tT]*", RUN+="keymap $name hewlett-packard-tablet"
+-- 
+1.7.3.2
+

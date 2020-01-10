@@ -1,0 +1,126 @@
+From 8350d0b9ec1f1b47e84549cb1cdd68127ed0e89b Mon Sep 17 00:00:00 2001
+From: Johannes Stezenbach <js@sig21.net>
+Date: Sun, 13 Dec 2009 23:54:05 +0100
+Subject: [PATCH] keymap: handle atkbd force_release quirk
+
+Some laptop keyboards don't generate release events
+for some hotkeys.  Since linux-2.6.32 the list of scancodes
+for which to enable the force_release quirk can be set
+via sysfs.
+Apply this to Samsung N130.
+
+Signed-off-by: Johannes Stezenbach <js@sig21.net>
+Signed-off-by: Martin Pitt <martin.pitt@ubuntu.com>
+---
+ Makefile.am                                       |    6 +++++
+ extras/keymap/95-keyboard-force-release.rules     |   24 +++++++++++++++++++++
+ extras/keymap/keyboard-force-release.sh           |   22 +++++++++++++++++++
+ extras/keymap/keymaps/force-release/samsung-other |   10 ++++++++
+ 4 files changed, 62 insertions(+), 0 deletions(-)
+ create mode 100644 extras/keymap/95-keyboard-force-release.rules
+ create mode 100644 extras/keymap/keyboard-force-release.sh
+ create mode 100644 extras/keymap/keymaps/force-release/samsung-other
+
+diff --git a/Makefile.am b/Makefile.am
+index 3e9713f..4435398 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -480,8 +480,10 @@ BUILT_SOURCES += $(nodist_extras_keymap_keymap_SOURCES)
+ 
+ EXTRA_DIST += extras/keymap/check-keymaps.sh
+ dist_udevrules_DATA += extras/keymap/95-keymap.rules
++dist_udevrules_DATA += extras/keymap/95-keyboard-force-release.rules
+ libexec_PROGRAMS += extras/keymap/keymap
+ dist_libexec_SCRIPTS += extras/keymap/findkeyboards
++dist_libexec_SCRIPTS += extras/keymap/keyboard-force-release.sh
+ dist_doc_DATA = extras/keymap/README.keymap.txt
+ 
+ CLEANFILES += \
+@@ -535,6 +537,10 @@ dist_udevkeymap_DATA = \
+ 	extras/keymap/keymaps/toshiba-satellite_a110 \
+ 	extras/keymap/keymaps/zepto-znote
+ 
++udevkeymapforcereldir = $(libexecdir)/keymaps/force-release
++dist_udevkeymapforcerel_DATA = \
++	extras/keymap/keymaps/force-release/samsung-other
++
+ extras/keymap/keys.txt: /usr/include/linux/input.h
+ 	$(AM_V_GEN)$(AWK) '/^#define.*KEY_[^ ]+[ \t]+[0-9]/ { if ($$2 != "KEY_MAX") { print $$2 } }' < $< | sed 's/^KEY_COFFEE$$/KEY_SCREENLOCK/' > $@
+ 
+diff --git a/extras/keymap/95-keyboard-force-release.rules b/extras/keymap/95-keyboard-force-release.rules
+new file mode 100644
+index 0000000..4d0a877
+--- /dev/null
++++ b/extras/keymap/95-keyboard-force-release.rules
+@@ -0,0 +1,24 @@
++# Set model specific atkbd force_release quirk
++#
++# Several laptops have hotkeys which don't generate release events,
++# which can cause problems with software key repeat.
++# The atkbd driver has a quirk handler for generating synthetic
++# release events, which can be configured via sysfs since 2.6.32.
++# Simply add a file with a list of scancodes for your laptop model
++# in /lib/udev/keymaps, and add a rule here.
++# If the hotkeys also need a keymap assignment you can copy the
++# scancodes from the keymap file, otherwise you can run
++# /lib/udev/keymap -i /dev/input/eventX
++# on a Linux vt to find out.
++
++ACTION!="add|change", GOTO="force_release_end"
++SUBSYSTEM!="serio", GOTO="force_release_end"
++KERNEL!="serio*", GOTO="force_release_end"
++DRIVER!="atkbd", GOTO="force_release_end"
++
++ENV{DMI_VENDOR}="$attr{[dmi/id]sys_vendor}"
++
++
++ENV{DMI_VENDOR}=="[sS][aA][mM][sS][uU][nN][gG]*", ATTR{[dmi/id]product_name}=="*N130*", RUN+="keyboard-force-release.sh $devpath samsung-other"
++
++LABEL="force_release_end"
+diff --git a/extras/keymap/keyboard-force-release.sh b/extras/keymap/keyboard-force-release.sh
+new file mode 100644
+index 0000000..b157ac3
+--- /dev/null
++++ b/extras/keymap/keyboard-force-release.sh
+@@ -0,0 +1,22 @@
++#!/bin/sh -e
++# read list of scancodes, convert hex to decimal and
++# append to the atkbd force_release sysfs attribute
++# $1 sysfs devpath for serioX
++# $2 file with scancode list (hex or dec)
++
++case "$2" in
++	/*) scf="$2" ;;
++	*)  scf="/lib/udev/keymaps/force-release/$2" ;;
++esac
++
++read attr <"/sys/$1/force_release"
++while read scancode dummy; do
++	case "$scancode" in
++		\#*) ;;
++		*)
++			scancode=$(($scancode))
++			attr="$attr${attr:+,}$scancode"
++			;;
++	esac
++done <"$scf"
++echo "$attr" >"/sys/$1/force_release"
+diff --git a/extras/keymap/keymaps/force-release/samsung-other b/extras/keymap/keymaps/force-release/samsung-other
+new file mode 100644
+index 0000000..c51123a
+--- /dev/null
++++ b/extras/keymap/keymaps/force-release/samsung-other
+@@ -0,0 +1,10 @@
++# list of scancodes (hex or decimal), optional comment
++0x82 # Fn+F4 CRT/LCD
++0x83 # Fn+F2 battery
++0x84 # Fn+F5 backlight on/off
++0x86 # Fn+F9 WLAN
++0x88 # Fn-Up brightness up
++0x89 # Fn-Down brightness down
++0xB3 # Fn+F8 switch power mode (battery/dynamic/performance)
++0xF7 # Fn+F10 Touchpad on
++0xF9 # Fn+F10 Touchpad off
+-- 
+1.7.3.2
+

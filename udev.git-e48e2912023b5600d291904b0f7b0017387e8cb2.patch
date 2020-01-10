@@ -1,0 +1,108 @@
+diff -up udev-147/extras/ata_id/ata_id.c.git505 udev-147/extras/ata_id/ata_id.c
+--- udev-147/extras/ata_id/ata_id.c.git505	2011-07-25 15:46:57.000000000 +0200
++++ udev-147/extras/ata_id/ata_id.c	2011-07-25 15:46:58.000000000 +0200
+@@ -301,8 +301,6 @@ int main(int argc, char *argv[])
+ 			printf("Usage: ata_id [--export] [--help] <device>\n"
+ 			       "  --export    print values as environment keys\n"
+ 			       "  --help      print this help text\n\n");
+-		default:
+-			rc = 1;
+ 			goto exit;
+ 		}
+ 	}
+diff -up udev-147/extras/hid2hci/hid2hci.c.git505 udev-147/extras/hid2hci/hid2hci.c
+--- udev-147/extras/hid2hci/hid2hci.c.git505	2009-08-07 02:20:06.000000000 +0200
++++ udev-147/extras/hid2hci/hid2hci.c	2011-07-25 15:47:00.000000000 +0200
+@@ -242,7 +242,7 @@ int main(int argc, char *argv[])
+ 	for (;;) {
+ 		int option;
+ 
+-		option = getopt_long(argc, argv, "m:p:M:qh", options, NULL);
++		option = getopt_long(argc, argv, "m:p:M:h", options, NULL);
+ 		if (option == -1)
+ 			break;
+ 
+@@ -276,8 +276,6 @@ int main(int argc, char *argv[])
+ 			break;
+ 		case 'h':
+ 			usage(NULL);
+-		default:
+-			exit(1);
+ 		}
+ 	}
+ 
+diff -up udev-147/extras/path_id/path_id.c.git505 udev-147/extras/path_id/path_id.c
+--- udev-147/extras/path_id/path_id.c.git505	2011-07-25 15:46:57.000000000 +0200
++++ udev-147/extras/path_id/path_id.c	2011-07-25 15:47:00.000000000 +0200
+@@ -455,8 +455,6 @@ int main(int argc, char **argv)
+ 			printf("Usage: path_id [--debug] [--help] <devpath>\n"
+ 			       "  --debug    print debug information\n"
+ 			       "  --help      print this help text\n\n");
+-		default:
+-			rc = 1;
+ 			goto exit;
+ 		}
+ 	}
+diff -up udev-147/extras/udev-acl/udev-acl.c.git505 udev-147/extras/udev-acl/udev-acl.c
+--- udev-147/extras/udev-acl/udev-acl.c.git505	2011-07-25 15:46:58.000000000 +0200
++++ udev-147/extras/udev-acl/udev-acl.c	2011-07-25 15:47:00.000000000 +0200
+@@ -371,7 +371,6 @@ int main (int argc, char* argv[])
+ 			break;
+ 		case 'h':
+ 			printf("Usage: udev-acl --action=ACTION [--device=DEVICEFILE] [--user=UID]\n\n");
+-		default:
+ 			goto out;
+ 		}
+ 	}
+diff -up udev-147/extras/usb_id/usb_id.c.git505 udev-147/extras/usb_id/usb_id.c
+--- udev-147/extras/usb_id/usb_id.c.git505	2011-07-25 15:46:57.000000000 +0200
++++ udev-147/extras/usb_id/usb_id.c	2011-07-25 15:47:00.000000000 +0200
+@@ -497,8 +497,6 @@ int main(int argc, char **argv)
+ 			       "  --num-info  use numerical values\n"
+ 			       "  --export    print values as environment keys\n"
+ 			       "  --help      print this help text\n\n");
+-		default:
+-			retval = 1;
+ 			goto exit;
+ 		}
+ 	}
+diff -up udev-147/libudev/libudev-util-private.c.git505 udev-147/libudev/libudev-util-private.c
+--- udev-147/libudev/libudev-util-private.c.git505	2009-10-27 11:29:30.000000000 +0100
++++ udev-147/libudev/libudev-util-private.c	2011-07-25 15:47:00.000000000 +0200
+@@ -127,7 +127,7 @@ int util_unlink_secure(struct udev *udev
+ uid_t util_lookup_user(struct udev *udev, const char *user)
+ {
+ 	char *endptr;
+-	int buflen = sysconf(_SC_GETPW_R_SIZE_MAX);
++	size_t buflen = sysconf(_SC_GETPW_R_SIZE_MAX);
+ 	char buf[buflen];
+ 	struct passwd pwbuf;
+ 	struct passwd *pw;
+@@ -152,7 +152,7 @@ uid_t util_lookup_user(struct udev *udev
+ gid_t util_lookup_group(struct udev *udev, const char *group)
+ {
+ 	char *endptr;
+-	int buflen = sysconf(_SC_GETGR_R_SIZE_MAX);
++	size_t buflen = sysconf(_SC_GETGR_R_SIZE_MAX);
+ 	char *buf;
+ 	struct group grbuf;
+ 	struct group *gr;
+diff -up udev-147/udev/udevadm-monitor.c.git505 udev-147/udev/udevadm-monitor.c
+diff -up udev-147/udev/udevd.c.git505 udev-147/udev/udevd.c
+--- udev-147/udev/udevd.c.git505	2011-07-25 15:46:57.000000000 +0200
++++ udev-147/udev/udevd.c	2011-07-25 15:47:00.000000000 +0200
+@@ -703,9 +703,11 @@ static int handle_inotify(struct udev *u
+ 				info(udev, "device %s closed, synthesising 'change'\n", udev_device_get_devnode(dev));
+ 				util_strscpyl(filename, sizeof(filename), udev_device_get_syspath(dev), "/uevent", NULL);
+ 				fd = open(filename, O_WRONLY);
+-				if (fd < 0 || write(fd, "change", 6) < 0)
+-					info(udev, "error writing uevent: %m\n");
+-				close(fd);
++				if (fd >= 0) {
++					if (write(fd, "change", 6) < 0)
++						info(udev, "error writing uevent: %m\n");
++					close(fd);
++				}
+ 			}
+ 			if (ev->mask & IN_IGNORED)
+ 				udev_watch_end(udev, dev);

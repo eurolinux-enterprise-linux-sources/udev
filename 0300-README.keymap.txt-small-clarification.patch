@@ -1,0 +1,26 @@
+From 5d490002b339f33a033fe09cef4272afb38da676 Mon Sep 17 00:00:00 2001
+From: Martin Pitt <martin.pitt@ubuntu.com>
+Date: Fri, 20 Nov 2009 18:22:53 -0600
+Subject: [PATCH] README.keymap.txt: small clarification
+
+---
+ extras/keymap/README.keymap.txt |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/extras/keymap/README.keymap.txt b/extras/keymap/README.keymap.txt
+index 274dc6a..ae8916b 100644
+--- a/extras/keymap/README.keymap.txt
++++ b/extras/keymap/README.keymap.txt
+@@ -48,7 +48,8 @@ for inclusion you need to do the following steps:
+  keyboard" and possibly a "module". Some laptops (notably Thinkpads, Sonys, and
+  Acers) have multimedia/function keys on a separate input device instead of the
+  primary keyboard. The keyboard device should have a name like "input/event3".
+- In the following commands, the name will be written as "input/eventX".
++ In the following commands, the name will be written as "input/eventX" (replace
++ X with the appropriate number).
+ 
+  2. Dump current mapping:
+ 
+-- 
+1.7.3.2
+

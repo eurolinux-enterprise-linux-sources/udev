@@ -1,0 +1,35 @@
+From cdf8e81b45b8be4e3dd7670916ddf2001b9ca08f Mon Sep 17 00:00:00 2001
+From: RH udev team <udev-maint@redhat.com>
+Date: Fri, 26 Jul 2013 16:49:13 +0200
+Subject: [PATCH] udevd.c: reset log_priority for new events
+
+---
+ udev/udevd.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/udev/udevd.c b/udev/udevd.c
+index e445cb2..441db13 100644
+--- a/udev/udevd.c
++++ b/udev/udevd.c
+@@ -236,6 +236,7 @@ static void worker_new(struct event *event)
+ 	pid = fork();
+ 	switch (pid) {
+ 	case 0: {
++                int log_priority = udev_get_log_priority(worker->udev);
+ 		sigset_t sigmask;
+ 		struct udev_device *dev;
+ 		struct pollfd pmon = {
+@@ -280,6 +281,10 @@ static void worker_new(struct event *event)
+ 			int failed = 0;
+ 
+ 			info(event->udev, "seq %llu running\n", udev_device_get_seqnum(dev));
++
++                        /* reset log_priority */
++                        udev_set_log_priority(worker->udev, log_priority);
++
+ 			udev_event = udev_event_new(dev);
+ 			if (udev_event == NULL)
+ 				_exit(3);
+-- 
+1.8.3.1
+

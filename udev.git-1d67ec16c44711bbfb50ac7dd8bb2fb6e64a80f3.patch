@@ -1,0 +1,33 @@
+commit 1d67ec16c44711bbfb50ac7dd8bb2fb6e64a80f3
+Author: Kay Sievers <kay.sievers@vrfy.org>
+Date:   Fri Dec 25 14:47:59 2009 +0100
+
+    fix typo in log message priority handling
+
+diff --git a/libudev/libudev-private.h b/libudev/libudev-private.h
+index 28110d1..fe1575d 100644
+--- a/libudev/libudev-private.h
++++ b/libudev/libudev-private.h
+@@ -26,7 +26,7 @@ udev_log_null(struct udev *udev, const char *format, ...) {}
+ #define udev_log_cond(udev, prio, arg...) \
+   do { \
+     if (udev_get_log_priority(udev) >= prio) \
+-      udev_log(udev, LOG_ERR, __FILE__, __LINE__, __FUNCTION__, ## arg); \
++      udev_log(udev, prio, __FILE__, __LINE__, __FUNCTION__, ## arg); \
+   } while (0)
+ 
+ #ifdef ENABLE_LOGGING
+diff --git a/udev/udevadm.c b/udev/udevadm.c
+index 3d94215..00c2350 100644
+--- a/udev/udevadm.c
++++ b/udev/udevadm.c
+@@ -35,8 +35,7 @@ static void log_fn(struct udev *udev, int priority,
+ 		fprintf(stderr, "%s: ", fn);
+ 		vfprintf(stderr, format, args);
+ 	} else {
+-		if (priority <= LOG_ERR)
+-			vfprintf(stderr, format, args);
++		vfprintf(stderr, format, args);
+ 		vsyslog(priority, format, args);
+ 	}
+ }

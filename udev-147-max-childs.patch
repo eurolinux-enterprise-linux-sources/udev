@@ -1,0 +1,27 @@
+diff -up udev-147/udev/udevd.c.cpunum udev-147/udev/udevd.c
+--- udev-147/udev/udevd.c.cpunum	2013-03-25 10:59:52.378077205 +0100
++++ udev-147/udev/udevd.c	2013-03-25 11:00:31.882919038 +0100
+@@ -1022,12 +1022,21 @@ int main(int argc, char *argv[])
+ 	if (debug_trace) {
+ 		max_childs = 1;
+ 	} else {
++		unsigned long cpu_num;
++		cpu_set_t cpu_set;
++
+ 		int memsize = mem_size_mb();
+ 
+ 		if (memsize > 0)
+-			max_childs = 128 + (memsize / 8);
++			max_childs = 16 + (memsize / 8);
+ 		else
+-			max_childs = 128;
++			max_childs = 16;
++
++		if (sched_getaffinity (0, sizeof (cpu_set), &cpu_set) == 0) {
++			cpu_num = CPU_COUNT (&cpu_set);
++			if (children_max > 8 + cpu_num * 2)
++				children_max = 8 + cpu_num * 2;
++		}
+ 	}
+ 
+ 	/* possibly overwrite maximum limit of executed events */

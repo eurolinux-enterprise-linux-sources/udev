@@ -1,0 +1,12 @@
+diff -up udev-147/extras/scsi_id/scsi_id.c.shortblack udev-147/extras/scsi_id/scsi_id.c
+--- udev-147/extras/scsi_id/scsi_id.c.shortblack	2014-06-06 14:33:34.065607184 +0200
++++ udev-147/extras/scsi_id/scsi_id.c	2014-06-06 14:33:34.153607186 +0200
+@@ -47,7 +47,7 @@ static const struct option options[] = {
+ 	{}
+ };
+ 
+-static const char short_options[] = "d:f:ghip:uvVx";
++static const char short_options[] = "bd:f:ghip:uvVx";
+ static const char dev_short_options[] = "bgp:";
+ 
+ static int all_good;

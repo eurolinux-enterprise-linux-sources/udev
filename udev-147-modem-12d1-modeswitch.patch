@@ -1,0 +1,11 @@
+diff -up udev-147/extras/modem-modeswitch/61-mobile-action.rules.1103278 udev-147/extras/modem-modeswitch/61-mobile-action.rules
+diff -up udev-147/extras/modem-modeswitch/61-option-modem-modeswitch.rules.1103278 udev-147/extras/modem-modeswitch/61-option-modem-modeswitch.rules
+--- udev-147/extras/modem-modeswitch/61-option-modem-modeswitch.rules.1103278	2014-07-24 15:38:38.280696184 +0200
++++ udev-147/extras/modem-modeswitch/61-option-modem-modeswitch.rules	2014-07-24 15:38:51.922716180 +0200
+@@ -34,6 +34,5 @@ ATTRS{idVendor}=="0af0", ATTRS{idProduct
+ ATTRS{idVendor}=="0af0", ATTRS{idProduct}=="7501", RUN+="modem-modeswitch -v 0x%s{idVendor} -p 0x%s{idProduct} -t option-zerocd"
+ ATTRS{idVendor}=="0af0", ATTRS{idProduct}=="7601", RUN+="modem-modeswitch -v 0x%s{idVendor} -p 0x%s{idProduct} -t option-zerocd"
+ ATTRS{idVendor}=="0af0", ATTRS{idProduct}=="7901", RUN+="modem-modeswitch -v 0x%s{idVendor} -p 0x%s{idProduct} -t option-zerocd"
+-ATTRS{idVendor}=="12d1", ATTRS{idProduct}=="1446", RUN+="modem-modeswitch -v 0x%s{idVendor} -p 0x%s{idProduct} -t option-zerocd"
+ 
+ LABEL="option_zerocd_end"

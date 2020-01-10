@@ -1,0 +1,29 @@
+From fc799aa6b60595e85b9c8eac4566a90cf83fe6a0 Mon Sep 17 00:00:00 2001
+From: Martin Pitt <martin.pitt@ubuntu.com>
+Date: Wed, 7 Jul 2010 23:17:11 +0200
+Subject: [PATCH] keymap: Find alternate Lenovo module
+
+Newer Lenovos apparently have a lower case "extra buttons" module, cover this
+as well.
+
+Sent by Quentin Denis <quentin.denis@gmail.com> via private mail.
+---
+ extras/keymap/findkeyboards |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/extras/keymap/findkeyboards b/extras/keymap/findkeyboards
+index acff534..5a22649 100755
+--- a/extras/keymap/findkeyboards
++++ b/extras/keymap/findkeyboards
+@@ -34,6 +34,8 @@ keyboard_devices() {
+     # modules
+     module=`udevadm trigger --verbose --dry-run --subsystem-match=input --attr-match=name='*Extra Buttons'`
+     module="$module
++`udevadm trigger --verbose --dry-run --subsystem-match=input --attr-match=name='*extra buttons'`"
++    module="$module
+ `udevadm trigger --verbose --dry-run --subsystem-match=input --attr-match=name='Sony Vaio Keys'`"
+     for m in $module; do
+ 	evdev=`ls -d $m/event* 2>/dev/null`
+-- 
+1.7.3.2
+

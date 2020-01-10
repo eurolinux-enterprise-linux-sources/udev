@@ -1,0 +1,50 @@
+From 233a922112408c7ed49bd72e73be228e231d46ba Mon Sep 17 00:00:00 2001
+From: Jerone Young <jerone.young@canonical.com>
+Date: Wed, 24 Mar 2010 20:14:23 -0500
+Subject: [PATCH] Fix Keymapping for upcoming Dell Laptops
+
+This patch fixes it so that new upcoming Dell machines will work
+correctly if users presses the touchpad toggle key.
+
+Currently 0xD8 is being mapped to sleep. Though this is only done by the
+Latitude XT* laptops. Many upcoming Laptops from Dell are mapping this
+key to "toogle touchpad off" .. giving the OS notification that it has
+just turned off the touchpad.
+
+Though their is an issue in that if this key is mapped the hardware
+first toogles .. then the software tries to do the samething after, if
+they fall out of sync ... no more touchpad. So leave out mapping these
+keys for now.
+
+Signed-off-by: Jerone Young <jerone.young@canonical.com>
+Signed-off-by: Martin Pitt <martin.pitt@ubuntu.com>
+---
+ extras/keymap/95-keymap.rules |    1 +
+ extras/keymap/keymaps/dell    |    1 -
+ 2 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/extras/keymap/95-keymap.rules b/extras/keymap/95-keymap.rules
+index dd58453..af39c21 100644
+--- a/extras/keymap/95-keymap.rules
++++ b/extras/keymap/95-keymap.rules
+@@ -54,6 +54,7 @@ LABEL="keyboard_vendorcheck"
+ 
+ ENV{DMI_VENDOR}=="Dell*", RUN+="keymap $name dell"
+ ENV{DMI_VENDOR}=="Dell*", ATTR{[dmi/id]product_name}=="Inspiron 1011", RUN+="keymap $name 0x84 wlan"
++ENV{DMI_VENDOR}=="Dell*", ATTR{[dmi/id]product_name}=="Latitude XT*", RUN+="keymap $name 0xD8 screenlock"
+ 
+ ENV{DMI_VENDOR}=="Compaq*", ATTR{[dmi/id]product_name}=="*E500*|*Evo N*", RUN+="keymap $name compaq-e_evo"
+ 
+diff --git a/extras/keymap/keymaps/dell b/extras/keymap/keymaps/dell
+index 5ff44d6..84e5b4e 100644
+--- a/extras/keymap/keymaps/dell
++++ b/extras/keymap/keymaps/dell
+@@ -23,5 +23,4 @@
+ 0x9B switchvideomode # Display Toggle button
+ 0xA2 playpause # Front panel play/pause
+ 0xA4 stopcd # Front panel stop
+-0xD8 screenlock # FIXME: Tablet lock button
+ 0xED media # MediaDirect button
+-- 
+1.7.3.2
+

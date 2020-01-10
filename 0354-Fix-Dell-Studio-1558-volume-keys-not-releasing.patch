@@ -1,0 +1,30 @@
+From f8ede05d7ad5286039319bcb188e86b9117551e2 Mon Sep 17 00:00:00 2001
+From: Jerone Young <jerone.young@canonical.com>
+Date: Tue, 6 Apr 2010 12:59:12 -0500
+Subject: [PATCH] Fix Dell Studio 1558 volume keys not releasing
+
+This patch fixes the Dell Studio 1558 to give a key release when a
+volume key is pressed. This is the same as the 1557.
+
+Signed-off-by: Jerone Young <jerone.young@canonical.com>
+Signed-off-by: Martin Pitt <martin.pitt@ubuntu.com>
+---
+ extras/keymap/95-keyboard-force-release.rules |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/extras/keymap/95-keyboard-force-release.rules b/extras/keymap/95-keyboard-force-release.rules
+index 28639a5..f0e1ab8 100644
+--- a/extras/keymap/95-keyboard-force-release.rules
++++ b/extras/keymap/95-keyboard-force-release.rules
+@@ -21,7 +21,7 @@ ENV{DMI_VENDOR}="$attr{[dmi/id]sys_vendor}"
+ 
+ ENV{DMI_VENDOR}=="[sS][aA][mM][sS][uU][nN][gG]*", ATTR{[dmi/id]product_name}=="*N130*|*N140*|*SR70S/SR71S*|*Q210/P210*", RUN+="keyboard-force-release.sh $devpath samsung-other"
+ 
+-ENV{DMI_VENDOR}=="Dell Inc.", ATTR{[dmi/id]product_name}=="Studio 1557", RUN+="keyboard-force-release.sh $devpath dell-studio-1557"
++ENV{DMI_VENDOR}=="Dell Inc.", ATTR{[dmi/id]product_name}=="Studio 1557|Studio 1558", RUN+="keyboard-force-release.sh $devpath dell-studio-1557"
+ 
+ ENV{DMI_VENDOR}=="FUJITSU SIEMENS", ATTR{[dmi/id]product_name}=="AMILO Si 1848+u", RUN+="keyboard-force-release.sh $devpath fujitsu-amilo-si1848"
+ 
+-- 
+1.7.3.2
+

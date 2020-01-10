@@ -1,0 +1,32 @@
+From c71d6a45aadbf69b394442e8b89c35db33afcff3 Mon Sep 17 00:00:00 2001
+From: Clemens Buchacher <drizzd@aon.at>
+Date: Mon, 21 Dec 2009 09:24:34 +0100
+Subject: [PATCH] add Samsung R70/R71 keymap
+
+Required for the keyboard driver to recognize special keys such as Fn+F2
+(battery), Fn+F3 (euro), Fn+F4 (switchmode), Fn+F6 (mute), Fn+F7
+(XF86Launch2), Fn+up/down (brightness), Fn+left/right (volume). Fn+F5 (blank
+screen) and Fn+F8 still do not generate events after this change, howver.
+
+Signed-off-by: Clemens Buchacher <drizzd@aon.at>
+Signed-off-by: Martin Pitt <martin.pitt@ubuntu.com>
+---
+ extras/keymap/95-keymap.rules |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/extras/keymap/95-keymap.rules b/extras/keymap/95-keymap.rules
+index ad281cb..d2bf4a2 100644
+--- a/extras/keymap/95-keymap.rules
++++ b/extras/keymap/95-keymap.rules
+@@ -95,7 +95,7 @@ ENV{DMI_VENDOR}=="INVENTEC", ATTR{[dmi/id]product_name}=="SYMPHONY 6.0/7.0", RUN
+ 
+ ENV{DMI_VENDOR}=="MAXDATA", ATTR{[dmi/id]product_name}=="Pro 7000*", RUN+="keymap $name maxdata-pro_7000"
+ 
+-ENV{DMI_VENDOR}=="[sS][aA][mM][sS][uU][nN][gG]*", ATTR{[dmi/id]product_name}=="*NC10*|*NC20*|*N130*|*SP55S*|*SQ45S70S*|*SX60P*|*SX22S*|*SX30S*|*R59P/R60P/R61P*|*Q210*|*Q310*|*X05*|*P560*|*R560*", RUN+="keymap $name samsung-other"
++ENV{DMI_VENDOR}=="[sS][aA][mM][sS][uU][nN][gG]*", ATTR{[dmi/id]product_name}=="*NC10*|*NC20*|*N130*|*SP55S*|*SQ45S70S*|*SX60P*|*SX22S*|*SX30S*|*R59P/R60P/R61P*|*SR70S/SR71S*|*Q210*|*Q310*|*X05*|*P560*|*R560*", RUN+="keymap $name samsung-other"
+ ENV{DMI_VENDOR}=="[sS][aA][mM][sS][uU][nN][gG]*", ATTR{[dmi/id]product_name}=="*SX20S*", RUN+="keymap $name samsung-sx20s"
+ ENV{DMI_VENDOR}=="[sS][aA][mM][sS][uU][nN][gG]*", ATTR{[dmi/id]product_name}=="SQ1US", RUN+="keymap $name samsung-sq1us"
+ 
+-- 
+1.7.3.2
+

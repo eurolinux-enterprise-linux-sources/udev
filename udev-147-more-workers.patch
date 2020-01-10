@@ -1,0 +1,53 @@
+diff -up udev-147/udev/udevd.c.workerlock udev-147/udev/udevd.c
+--- udev-147/udev/udevd.c.workerlock	2014-06-06 16:07:03.900740859 +0200
++++ udev-147/udev/udevd.c	2014-06-06 16:07:03.902740859 +0200
+@@ -375,6 +375,7 @@ static void worker_new(struct event *eve
+ static void event_run(struct event *event)
+ {
+ 	struct udev_list_node *loop;
++	unsigned int workers_locked = 0;
+ 
+ 	udev_list_node_foreach(loop, &worker_list) {
+ 		struct worker *worker = node_to_worker(loop);
+@@ -397,7 +398,11 @@ static void event_run(struct event *even
+ 		return;
+ 	}
+ 
+-	if (childs >= max_childs) {
++        workers_locked = udev_lock_getncnt();
++        if (workers_locked < 0)
++                workers_locked = 0;
++
++	if (childs >= (max_childs + workers_locked) ) {
+                 dbg(event->udev, "maximum number (%i) of childs reached\n", childs);
+ 		return;
+ 	}
+diff -up udev-147/udev/udev.h.workerlock udev-147/udev/udev.h
+--- udev-147/udev/udev.h.workerlock	2014-06-06 16:07:03.441740848 +0200
++++ udev-147/udev/udev.h	2014-06-06 16:07:03.903740859 +0200
+@@ -79,6 +79,7 @@ int udev_lock_init(void);
+ int udev_lock_teardown(void);
+ int udev_lock_down(void);
+ int udev_lock_up(void);
++unsigned int udev_lock_getzcnt(void);
+ 
+ /* udev-watch.c */
+ int udev_watch_init(struct udev *udev);
+diff -up udev-147/udev/udev-lock.c.workerlock udev-147/udev/udev-lock.c
+--- udev-147/udev/udev-lock.c.workerlock	2014-06-06 16:07:03.845740857 +0200
++++ udev-147/udev/udev-lock.c	2014-07-11 16:30:17.437424768 +0200
+@@ -87,6 +87,14 @@ int udev_lock_init(void)
+ 	return 0;
+ }
+ 
++
++unsigned int udev_lock_getncnt(void)
++{
++	int r;
++	r = semctl(udev_lock_semid, 0, GETNCNT);
++	return (r > 0 ? r : 0);
++}
++
+ /*
+  * udev_lock_teardown - tear down the global semaphore.
+  * NOTE: This function is unused and implemented for completeness.

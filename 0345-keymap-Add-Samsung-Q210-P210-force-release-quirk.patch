@@ -1,0 +1,30 @@
+From 20b48c3727eef1f266cbfd6bf5854b5c1419beb9 Mon Sep 17 00:00:00 2001
+From: Andy Whitcroft <apw@canonical.com>
+Date: Tue, 2 Mar 2010 13:55:03 +0100
+Subject: [PATCH] keymap: Add Samsung Q210/P210 force-release quirk
+
+The Samsung Q210/P210 laptop also needs all of its function keys quirked.
+
+https://launchpad.net/bugs/530093
+
+Signed-off-by: Martin Pitt <martin.pitt@ubuntu.com>
+---
+ extras/keymap/95-keyboard-force-release.rules |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/extras/keymap/95-keyboard-force-release.rules b/extras/keymap/95-keyboard-force-release.rules
+index 659ee95..48b896d 100644
+--- a/extras/keymap/95-keyboard-force-release.rules
++++ b/extras/keymap/95-keyboard-force-release.rules
+@@ -19,7 +19,7 @@ DRIVER!="atkbd", GOTO="force_release_end"
+ ENV{DMI_VENDOR}="$attr{[dmi/id]sys_vendor}"
+ 
+ 
+-ENV{DMI_VENDOR}=="[sS][aA][mM][sS][uU][nN][gG]*", ATTR{[dmi/id]product_name}=="*N130*|*N140*|*SR70S/SR71S*", RUN+="keyboard-force-release.sh $devpath samsung-other"
++ENV{DMI_VENDOR}=="[sS][aA][mM][sS][uU][nN][gG]*", ATTR{[dmi/id]product_name}=="*N130*|*N140*|*SR70S/SR71S*|*Q210/P210*", RUN+="keyboard-force-release.sh $devpath samsung-other"
+ 
+ ENV{DMI_VENDOR}=="Dell Inc.", ATTR{[dmi/id]product_name}=="Studio 1557", RUN+="keyboard-force-release.sh $devpath dell-studio-1557"
+ 
+-- 
+1.7.3.2
+

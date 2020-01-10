@@ -1,0 +1,27 @@
+From e17f9c3cd589ee50ba74976d11a5804ca2562472 Mon Sep 17 00:00:00 2001
+From: Lee, Chun-Yi <joeyli.kernel@gmail.com>
+Date: Sat, 25 Sep 2010 16:50:27 +0800
+Subject: [PATCH] keymap: Add alternate MSI vendor name
+
+Add new vendor name "Micro-Star International" in 95-keymap.rules.
+
+Signed-off-by: Martin Pitt <martin.pitt@ubuntu.com>
+---
+ extras/keymap/95-keymap.rules |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/extras/keymap/95-keymap.rules b/extras/keymap/95-keymap.rules
+index 9bc3cb6..eda006e 100644
+--- a/extras/keymap/95-keymap.rules
++++ b/extras/keymap/95-keymap.rules
+@@ -109,6 +109,7 @@ ENV{DMI_VENDOR}=="MEDION*", ATTR{[dmi/id]product_name}=="*FID2060*", RUN+="keyma
+ ENV{DMI_VENDOR}=="MEDIONNB", ATTR{[dmi/id]product_name}=="A555*", RUN+="keymap $name medionnb-a555"
+ 
+ ENV{DMI_VENDOR}=="MICRO-STAR*", RUN+="keymap $name micro-star"
++ENV{DMI_VENDOR}=="Micro-Star International", RUN+="keymap $name micro-star"
+ 
+ # some MSI models generate ACPI/input events on the LNXVIDEO input devices,
+ # plus some extra synthesized ones on atkbd as an echo of actually changing the
+-- 
+1.7.3.2
+

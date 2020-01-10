@@ -1,0 +1,11 @@
+diff -up udev-147/extras/cdrom_id/cdrom_id.c.profiles udev-147/extras/cdrom_id/cdrom_id.c
+--- udev-147/extras/cdrom_id/cdrom_id.c.profiles	2012-10-11 12:41:01.625073871 +0200
++++ udev-147/extras/cdrom_id/cdrom_id.c	2012-10-11 12:41:04.896062580 +0200
+@@ -430,7 +430,6 @@ static int cd_profiles(struct udev *udev
+ 			}
+ 		}
+ 		info(udev, "no current profile, assuming no media\n");
+-		return -1;
+ 	}
+ 
+ 	switch (cur_profile) {

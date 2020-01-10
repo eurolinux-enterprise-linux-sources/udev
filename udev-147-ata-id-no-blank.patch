@@ -1,0 +1,43 @@
+commit 160b069c25690bfb0c785994c7c3710289179107
+Author: Kay Sievers <kay.sievers@vrfy.org>
+Date:   Fri Nov 20 03:03:27 2009 +0100
+
+    ata_id: skip ATA commands if we find an optical drive
+    
+    Some drives are reported to erase CD-RW media with the ATA
+    commands we send.
+    
+    Thanks to Christoph Stritt <phoenix@jobob.com> for his debugging.
+    
+    Original bug is here:
+      http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=556635
+
+diff --git a/extras/ata_id/ata_id.c b/extras/ata_id/ata_id.c
+index 66b9f42..cbd3b5b 100644
+--- a/extras/ata_id/ata_id.c
++++ b/extras/ata_id/ata_id.c
+@@ -38,6 +38,7 @@
+ #include <linux/types.h>
+ #include <linux/hdreg.h>
+ #include <linux/fs.h>
++#include <linux/cdrom.h>
+ #include <arpa/inet.h>
+ 
+ #include "libudev.h"
+@@ -210,6 +211,16 @@ static int disk_identify (struct udev *udev,
+ 		goto fail;
+ 	}
+ 
++	/*
++	 * do not confuse optical drive firmware with ATA commands
++	 * some drives are reported to blank CD-RWs
++	 */
++	if (ioctl(fd, CDROM_GET_CAPABILITY, NULL) >= 0) {
++		errno = EIO;
++		ret = -1;
++		goto fail;
++	}
++
+ 	/* So, it's a block device. Let's make sure the ioctls work */
+ 	if ((ret = ioctl(fd, BLKGETSIZE64, &size)) < 0)
+ 		goto fail;

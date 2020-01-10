@@ -1,0 +1,64 @@
+From 4c514e31734a704ca58e543fa4330616ba584b39 Mon Sep 17 00:00:00 2001
+From: Martin Pitt <martin.pitt@ubuntu.com>
+Date: Fri, 12 Feb 2010 19:25:47 +0100
+Subject: [PATCH] keymap: Fix LG X110
+
+The LG X110 is not a perfect clone of the MSI Wind after all, and needs its own
+keymap. Thanks to Konstantin Lavrov!
+
+https://launchpad.net/bugs/520650
+---
+ Makefile.am                   |    1 +
+ extras/keymap/95-keymap.rules |    3 +--
+ extras/keymap/keymaps/lg-x110 |   12 ++++++++++++
+ 3 files changed, 14 insertions(+), 2 deletions(-)
+ create mode 100644 extras/keymap/keymaps/lg-x110
+
+diff --git a/Makefile.am b/Makefile.am
+index 728076a..069bf7f 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -518,6 +518,7 @@ dist_udevkeymap_DATA = \
+ 	extras/keymap/keymaps/lenovo-thinkpad-usb-keyboard-trackpoint \
+ 	extras/keymap/keymaps/lenovo-thinkpad_x6_tablet \
+ 	extras/keymap/keymaps/lenovo-thinkpad_x200_tablet \
++	extras/keymap/keymaps/lg-x110 \
+ 	extras/keymap/keymaps/logitech-wave \
+ 	extras/keymap/keymaps/logitech-wave-cordless \
+ 	extras/keymap/keymaps/maxdata-pro_7000 \
+diff --git a/extras/keymap/95-keymap.rules b/extras/keymap/95-keymap.rules
+index d3690bb..fcd42aa 100644
+--- a/extras/keymap/95-keymap.rules
++++ b/extras/keymap/95-keymap.rules
+@@ -93,8 +93,7 @@ ENV{DMI_VENDOR}=="FUJITSU*", ATTR{[dmi/id]product_name}=="*Amilo Si 1520*", RUN+
+ ENV{DMI_VENDOR}=="FUJITSU*", ATTR{[dmi/id]product_name}=="AMILO*M*", RUN+="keymap $name 0x97 prog2 0x9F prog1"
+ ENV{DMI_VENDOR}=="FUJITSU*", ATTR{[dmi/id]product_name}=="Amilo Li 1718", RUN+="keymap $name 0xD6 wlan"
+ 
+-# MSI Wind clone
+-ENV{DMI_VENDOR}=="LG*", ATTR{[dmi/id]product_name}=="*X110*", RUN+="keymap $name micro-star"
++ENV{DMI_VENDOR}=="LG*", ATTR{[dmi/id]product_name}=="*X110*", RUN+="keymap $name lg-x110"
+ 
+ ENV{DMI_VENDOR}=="MEDION*", ATTR{[dmi/id]product_name}=="*FID2060*", RUN+="keymap $name medion-fid2060"
+ ENV{DMI_VENDOR}=="MEDIONNB", ATTR{[dmi/id]product_name}=="A555*", RUN+="keymap $name medionnb-a555"
+diff --git a/extras/keymap/keymaps/lg-x110 b/extras/keymap/keymaps/lg-x110
+new file mode 100644
+index 0000000..a61cf3d
+--- /dev/null
++++ b/extras/keymap/keymaps/lg-x110
+@@ -0,0 +1,12 @@
++0xA0 mute # Fn-F9
++0xAE volumedown # Fn-Left
++0xAF search # Fn-F3
++0xB0 volumeup # Fn-Right
++0xB1 battery # Fn-F10 Info
++0xB3 suspend # Fn-F12
++0xDF sleep # Fn-F4
++# 0xE2 bluetooth # satellite dish2
++0xE4 f22 # Fn-F5   Touchpad disable
++0xF6 wlan # Fn-F6
++0xF7 reserved # brightnessdown # Fn-Down
++0xF8 reserved # brightnessup # Fn-Up
+\ No newline at end of file
+-- 
+1.7.3.2
+

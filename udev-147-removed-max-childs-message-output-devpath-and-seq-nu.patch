@@ -1,0 +1,42 @@
+From 0879ddb472ee17b186eea50b898a6a0bac56f77a Mon Sep 17 00:00:00 2001
+From: RH udev team <udev-maint@redhat.com>
+Date: Fri, 26 Jul 2013 18:24:12 +0200
+Subject: [PATCH] removed max childs message, output devpath and seq num for
+ log_prio
+
+---
+ udev/udev-rules.c | 4 ++++
+ udev/udevd.c      | 2 +-
+ 2 files changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/udev/udev-rules.c b/udev/udev-rules.c
+index 50031c1..97cfac7 100644
+--- a/udev/udev-rules.c
++++ b/udev/udev-rules.c
+@@ -2370,6 +2370,10 @@ int udev_rules_apply_to_event(struct udev_rules *rules, struct udev_event *event
+ 			break;
+                 case TK_A_LOG_PRIORITY:
+                         udev_set_log_priority(event->udev, cur->key.log_priority);
++                        info(event->udev, "seq %llu, devpath '%s'\n",
++                             udev_device_get_seqnum(event->dev),
++                             udev_device_get_devpath(event->dev));
++ 
+                         break;
+                 case TK_A_OWNER:
+ 			{
+diff --git a/udev/udevd.c b/udev/udevd.c
+index 441db13..1c41add 100644
+--- a/udev/udevd.c
++++ b/udev/udevd.c
+@@ -396,7 +396,7 @@ static void event_run(struct event *event)
+ 	}
+ 
+ 	if (childs >= max_childs) {
+-		info(event->udev, "maximum number (%i) of childs reached\n", childs);
++                dbg(event->udev, "maximum number (%i) of childs reached\n", childs);
+ 		return;
+ 	}
+ 
+-- 
+1.8.3.1
+

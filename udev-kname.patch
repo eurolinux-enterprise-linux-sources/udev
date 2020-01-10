@@ -1,0 +1,25 @@
+RHEL6 backported
+
+commit cdb1d7608a2e2ba708a890eeab6e5e99409a1953
+Author: Kay Sievers <kay.sievers@vrfy.org>
+Date:   Fri Oct 22 13:50:55 2010 +0200
+
+    libudev: return kernel provided devnode when asked before we handled any rules
+
+--- udev-147.old/libudev/libudev-device.c	2012-01-26 15:51:01.000000000 +0100
++++ udev-147/libudev/libudev-device.c	2012-01-26 16:25:09.572808304 +0100
+@@ -751,6 +751,15 @@ const char *udev_device_get_devnode(stru
+ 		return NULL;
+ 	if (!udev_device->info_loaded)
+ 		device_load_info(udev_device);
++
++	/* we might get called before we handled an event and have a db, use the kernel-provided name */
++	if (udev_device->devnode == NULL && udev_device_get_knodename(udev_device) != NULL) {
++		if (asprintf(&udev_device->devnode, "%s/%s",
++			     udev_get_dev_path(udev_device->udev), udev_device_get_knodename(udev_device)) < 0)
++			return NULL;
++		return udev_device->devnode;
++	}
++
+ 	return udev_device->devnode;
+ }

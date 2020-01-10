@@ -1,0 +1,55 @@
+From 4ca91a04e8b727a079a973fdd9bc2b093e8315a5 Mon Sep 17 00:00:00 2001
+From: Martin Pitt <martin.pitt@ubuntu.com>
+Date: Mon, 15 Feb 2010 13:15:25 +0100
+Subject: [PATCH] keymap: Add Toshiba Satellite M30X
+
+Thanks to Alessio Gaeta!
+
+https://launchpad.net/bugs/510019
+---
+ Makefile.am                                  |    1 +
+ extras/keymap/95-keymap.rules                |    1 +
+ extras/keymap/keymaps/toshiba-satellite_m30x |    7 +++++++
+ 3 files changed, 9 insertions(+), 0 deletions(-)
+ create mode 100644 extras/keymap/keymaps/toshiba-satellite_m30x
+
+diff --git a/Makefile.am b/Makefile.am
+index 1b4e2ea..db23f16 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -537,6 +537,7 @@ dist_udevkeymap_DATA = \
+ 	extras/keymap/keymaps/samsung-sx20s \
+ 	extras/keymap/keymaps/toshiba-satellite_a100 \
+ 	extras/keymap/keymaps/toshiba-satellite_a110 \
++	extras/keymap/keymaps/toshiba-satellite_m30x \
+ 	extras/keymap/keymaps/zepto-znote
+ 
+ udevkeymapforcereldir = $(libexecdir)/keymaps/force-release
+diff --git a/extras/keymap/95-keymap.rules b/extras/keymap/95-keymap.rules
+index fcd42aa..65b0d6e 100644
+--- a/extras/keymap/95-keymap.rules
++++ b/extras/keymap/95-keymap.rules
+@@ -115,6 +115,7 @@ ENV{DMI_VENDOR}=="[sS][aA][mM][sS][uU][nN][gG]*", ATTR{[dmi/id]product_name}=="S
+ 
+ ENV{DMI_VENDOR}=="TOSHIBA", ATTR{[dmi/id]product_name}=="SATELLITE A100", RUN+="keymap $name toshiba-satellite_a100"
+ ENV{DMI_VENDOR}=="TOSHIBA", ATTR{[dmi/id]product_name}=="Satellite A110", RUN+="keymap $name toshiba-satellite_a110"
++ENV{DMI_VENDOR}=="TOSHIBA", ATTR{[dmi/id]product_name}=="Satellite M30X", RUN+="keymap $name toshiba-satellite_m30x"
+ 
+ ENV{DMI_VENDOR}=="OQO Inc.*", ATTR{[dmi/id]product_name}=="OQO Model 2*", RUN+="keymap $name oqo-model2"
+ 
+diff --git a/extras/keymap/keymaps/toshiba-satellite_m30x b/extras/keymap/keymaps/toshiba-satellite_m30x
+new file mode 100644
+index 0000000..cf6d912
+--- /dev/null
++++ b/extras/keymap/keymaps/toshiba-satellite_m30x
+@@ -0,0 +1,7 @@
++0xef brightnessdown
++0xd9 brightnessup
++0xee screenlock
++0x93 media
++0x9e prog1 #touchpad_enable
++0x9f prog2 #touchpad_disable
++
+-- 
+1.7.3.2
+

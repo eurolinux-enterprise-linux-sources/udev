@@ -1,0 +1,26 @@
+From 92cffb0bd18bd8fd245666a519ad0e54dc537031 Mon Sep 17 00:00:00 2001
+From: Martin Pitt <martin.pitt@ubuntu.com>
+Date: Mon, 23 Aug 2010 10:47:28 +0200
+Subject: [PATCH] keymap: Add HP G60
+
+https://launchpad.net/bugs/554944
+---
+ extras/keymap/95-keymap.rules |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/extras/keymap/95-keymap.rules b/extras/keymap/95-keymap.rules
+index e9d5721..5656de9 100644
+--- a/extras/keymap/95-keymap.rules
++++ b/extras/keymap/95-keymap.rules
+@@ -72,7 +72,7 @@ ENV{DMI_VENDOR}=="Hewlett-Packard*", RUN+="keymap $name hewlett-packard"
+ ENV{DMI_VENDOR}=="Hewlett-Packard*", ATTR{[dmi/id]product_name}=="*[tT][aA][bB][lL][eE][tT]*", RUN+="keymap $name hewlett-packard-tablet"
+ ENV{DMI_VENDOR}=="Hewlett-Packard*", ATTR{[dmi/id]product_name}=="*[pP][aA][vV][iI][lL][iI][oO][nN]*", RUN+="keymap $name hewlett-packard-pavilion"
+ ENV{DMI_VENDOR}=="Hewlett-Packard*", ATTR{[dmi/id]product_name}=="*Compaq*|*EliteBook*|*2230s*", RUN+="keymap $name hewlett-packard-compaq_elitebook"
+-ENV{DMI_VENDOR}=="Hewlett-Packard*", ATTR{[dmi/id]product_name}=="*2510p*|*2530p*", RUN+="keymap $name hewlett-packard-2510p_2530p"
++ENV{DMI_VENDOR}=="Hewlett-Packard*", ATTR{[dmi/id]product_name}=="*2510p*|*2530p*|HP G60 Notebook PC", RUN+="keymap $name hewlett-packard-2510p_2530p"
+ ENV{DMI_VENDOR}=="Hewlett-Packard*", ATTR{[dmi/id]product_name}=="*[tT][xX]2*", RUN+="keymap $name hewlett-packard-tx2"
+ ENV{DMI_VENDOR}=="Hewlett-Packard", ATTR{[dmi/id]product_name}=="Presario 2100*", RUN+="keymap $name hewlett-packard-presario-2100"
+ # HP Pavillion dv6315ea has empty DMI_VENDOR
+-- 
+1.7.3.2
+

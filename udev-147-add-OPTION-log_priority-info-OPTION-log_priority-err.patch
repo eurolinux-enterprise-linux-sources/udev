@@ -1,0 +1,72 @@
+From 2e88847524e800ee730cf29c48a525fdea2d3501 Mon Sep 17 00:00:00 2001
+From: RH udev team <udev-maint@redhat.com>
+Date: Fri, 26 Jul 2013 15:25:59 +0200
+Subject: [PATCH] add OPTION="log_priority=info" OPTION="log_priority=err"
+
+---
+ udev/udev-rules.c | 21 ++++++++++++++++++---
+ 1 file changed, 18 insertions(+), 3 deletions(-)
+
+diff --git a/udev/udev-rules.c b/udev/udev-rules.c
+index df8a356..50031c1 100644
+--- a/udev/udev-rules.c
++++ b/udev/udev-rules.c
+@@ -167,6 +167,7 @@ enum token_type {
+ 	TK_A_ATTR,			/* val, attr */
+ 	TK_A_RUN,			/* val, bool */
+ 	TK_A_GOTO,			/* size_t */
++        TK_A_LOG_PRIORITY,              /* int */
+ 
+ 	TK_END,
+ };
+@@ -202,6 +203,7 @@ struct token {
+ 				int devlink_prio;
+ 				int event_timeout;
+ 				int watch;
++                                int log_priority;
+ 			};
+ 		} key;
+ 	};
+@@ -1065,7 +1067,10 @@ static int rule_add_key(struct rule_tmp *rule_tmp, enum token_type type,
+ 	case TK_A_EVENT_TIMEOUT:
+ 		token->key.event_timeout = *(int *)data;
+ 		break;
+-	case TK_RULE:
++        case TK_A_LOG_PRIORITY:
++                token->key.log_priority = *(int *)data;
++                break;
++        case TK_RULE:
+ 	case TK_M_PARENTS_MIN:
+ 	case TK_M_PARENTS_MAX:
+ 	case TK_M_MAX:
+@@ -1526,7 +1531,14 @@ static int add_rule(struct udev_rules *rules, char *line,
+ 				rule_add_key(&rule_tmp, TK_A_DEVLINK_PRIO, 0, NULL, &prio);
+ 				dbg(rules->udev, "link priority=%i\n", prio);
+ 			}
+-			pos = strstr(value, "event_timeout=");
++                        pos = strstr(value, "log_priority=");
++                        if (pos != NULL) {
++                                int prio = util_log_priority(&pos[strlen("log_priority=")]);
++
++                                rule_add_key(&rule_tmp, TK_A_LOG_PRIORITY, 0, NULL, &prio);
++                                dbg(rules->udev, "log priority=%i\n", prio);
++                        }
++                        pos = strstr(value, "event_timeout=");
+ 			if (pos != NULL) {
+ 				int tout = atoi(&pos[strlen("event_timeout=")]);
+ 
+@@ -2356,7 +2368,10 @@ int udev_rules_apply_to_event(struct udev_rules *rules, struct udev_event *event
+ 		case TK_A_DEVLINK_PRIO:
+ 			udev_device_set_devlink_priority(event->dev, cur->key.devlink_prio);
+ 			break;
+-		case TK_A_OWNER:
++                case TK_A_LOG_PRIORITY:
++                        udev_set_log_priority(event->udev, cur->key.log_priority);
++                        break;
++                case TK_A_OWNER:
+ 			{
+ 				char owner[UTIL_NAME_SIZE];
+ 
+-- 
+1.8.3.1
+

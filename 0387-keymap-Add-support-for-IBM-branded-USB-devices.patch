@@ -1,0 +1,55 @@
+From 8bc376a37393cd466d91be17bf3a208a0ad1eeac Mon Sep 17 00:00:00 2001
+From: Matthew Garrett <mjg@redhat.com>
+Date: Thu, 1 Apr 2010 14:22:32 -0400
+Subject: [PATCH] keymap: Add support for IBM-branded USB devices
+
+These seem to use a different layout to the Lenovo-branded devices
+
+Signed-off-by: Martin Pitt <martin.pitt@ubuntu.com>
+---
+ Makefile.am                                        |    1 +
+ extras/keymap/95-keymap.rules                      |    1 +
+ .../keymaps/ibm-thinkpad-usb-keyboard-trackpoint   |    7 +++++++
+ 3 files changed, 9 insertions(+), 0 deletions(-)
+ create mode 100644 extras/keymap/keymaps/ibm-thinkpad-usb-keyboard-trackpoint
+
+diff --git a/Makefile.am b/Makefile.am
+index 33ab56a..940cb95 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -534,6 +534,7 @@ dist_udevkeymap_DATA = \
+ 	extras/keymap/keymaps/hewlett-packard-presario-2100 \
+ 	extras/keymap/keymaps/hewlett-packard-tablet \
+ 	extras/keymap/keymaps/hewlett-packard-tx2 \
++	extras/keymap/keymaps/ibm-thinkpad-usb-keyboard-trackpoint \
+ 	extras/keymap/keymaps/inventec-symphony_6.0_7.0 \
+ 	extras/keymap/keymaps/lenovo-3000 \
+ 	extras/keymap/keymaps/lenovo-thinkpad-usb-keyboard-trackpoint \
+diff --git a/extras/keymap/95-keymap.rules b/extras/keymap/95-keymap.rules
+index 26666a9..517c87c 100644
+--- a/extras/keymap/95-keymap.rules
++++ b/extras/keymap/95-keymap.rules
+@@ -22,6 +22,7 @@ LABEL="keyboard_usbcheck"
+ ENV{ID_VENDOR}=="Logitech*", ATTRS{name}=="Logitech USB Multimedia Keyboard", RUN+="keymap $name logitech-wave"
+ ENV{ID_VENDOR}=="Logitech*", ATTRS{name}=="Logitech USB Receiver", RUN+="keymap $name logitech-wave-cordless"
+ ENV{ID_VENDOR}=="Lite-On_Technology_Corp*", ATTRS{name}=="Lite-On Technology Corp. ThinkPad USB Keyboard with TrackPoint", RUN+="keymap $name lenovo-thinkpad-usb-keyboard-trackpoint"
++ENV{ID_VENDOR_ID}=="04b3", ENV{ID_MODEL_ID}=="301[89]", RUN+="keymap $name ibm-thinkpad-usb-keyboard-trackpoint"
+ 
+ GOTO="keyboard_end"
+ 
+diff --git a/extras/keymap/keymaps/ibm-thinkpad-usb-keyboard-trackpoint b/extras/keymap/keymaps/ibm-thinkpad-usb-keyboard-trackpoint
+new file mode 100644
+index 0000000..027e50b
+--- /dev/null
++++ b/extras/keymap/keymaps/ibm-thinkpad-usb-keyboard-trackpoint
+@@ -0,0 +1,7 @@
++0x900f0 screenlock
++0x900f1 wlan
++0x900f2 switchvideomode
++0x900f3 suspend
++0x900f4 brightnessup
++0x900f5 brightnessdown
++0x900f8 zoom
+-- 
+1.7.3.2
+
